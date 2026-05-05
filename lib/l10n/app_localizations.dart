@@ -203,6 +203,18 @@ abstract class AppLocalizations {
   /// **'Edit trade'**
   String get tradesEditTitle;
 
+  /// No description provided for @tradesDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trade detail'**
+  String get tradesDetailTitle;
+
+  /// No description provided for @tradesAccountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get tradesAccountLabel;
+
   /// No description provided for @tradesInstrumentLabel.
   ///
   /// In en, this message translates to:
@@ -262,6 +274,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'YYYY-MM-DD'**
   String get tradesOpenedAtHint;
+
+  /// No description provided for @tradesQuantityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get tradesQuantityLabel;
+
+  /// No description provided for @tradesEntryPriceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Entry price'**
+  String get tradesEntryPriceLabel;
+
+  /// No description provided for @tradesExitPriceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit price'**
+  String get tradesExitPriceLabel;
+
+  /// No description provided for @tradesFeeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fee'**
+  String get tradesFeeLabel;
+
+  /// No description provided for @tradesTaxLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax'**
+  String get tradesTaxLabel;
+
+  /// No description provided for @tradesPlanLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan'**
+  String get tradesPlanLabel;
+
+  /// No description provided for @tradesReviewLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Review'**
+  String get tradesReviewLabel;
+
+  /// No description provided for @tradesPlanPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Not connected yet'**
+  String get tradesPlanPending;
+
+  /// No description provided for @tradesReviewPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Not connected yet'**
+  String get tradesReviewPending;
+
+  /// No description provided for @tradesDateValidationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid opened date.'**
+  String get tradesDateValidationError;
+
+  /// No description provided for @tradesNumberValidationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid number.'**
+  String get tradesNumberValidationError;
+
+  /// No description provided for @tradesMissingReferenceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing account or instrument'**
+  String get tradesMissingReferenceTitle;
+
+  /// No description provided for @tradesMissingReferenceBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Create account and instrument data before adding trades.'**
+  String get tradesMissingReferenceBody;
 
   /// No description provided for @tradesCancel.
   ///

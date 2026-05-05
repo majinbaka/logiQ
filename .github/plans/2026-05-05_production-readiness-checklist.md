@@ -101,9 +101,9 @@ Date: 2026-05-05
 
 - [ ] Task T1: Trades detail screen + richer model fields
   - AC: User can open a trade detail page from list and view/edit `quantity`, `entry/exit`, `fee`, `tax`, `plan/review` fields.
-- [ ] Task T2: Replace free-text IDs with selectors
+- [x] Task T2: Replace free-text IDs with selectors
   - AC: Create/Edit trade form uses account and instrument pickers; invalid IDs cannot be submitted.
-- [ ] Task T3: Trades form validation UX
+- [x] Task T3: Trades form validation UX
   - AC: Inline validation errors are shown for required fields/date constraints; no silent failure.
 - [ ] Task T4: Trades widget tests
   - AC: Widget tests cover create, edit, delete, and validation error states for Trades flow.

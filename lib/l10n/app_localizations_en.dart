@@ -63,6 +63,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tradesEditTitle => 'Edit trade';
 
   @override
+  String get tradesDetailTitle => 'Trade detail';
+
+  @override
+  String get tradesAccountLabel => 'Account';
+
+  @override
   String get tradesInstrumentLabel => 'Instrument ID';
 
   @override
@@ -91,6 +97,45 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tradesOpenedAtHint => 'YYYY-MM-DD';
+
+  @override
+  String get tradesQuantityLabel => 'Quantity';
+
+  @override
+  String get tradesEntryPriceLabel => 'Entry price';
+
+  @override
+  String get tradesExitPriceLabel => 'Exit price';
+
+  @override
+  String get tradesFeeLabel => 'Fee';
+
+  @override
+  String get tradesTaxLabel => 'Tax';
+
+  @override
+  String get tradesPlanLabel => 'Plan';
+
+  @override
+  String get tradesReviewLabel => 'Review';
+
+  @override
+  String get tradesPlanPending => 'Not connected yet';
+
+  @override
+  String get tradesReviewPending => 'Not connected yet';
+
+  @override
+  String get tradesDateValidationError => 'Please enter a valid opened date.';
+
+  @override
+  String get tradesNumberValidationError => 'Please enter a valid number.';
+
+  @override
+  String get tradesMissingReferenceTitle => 'Missing account or instrument';
+
+  @override
+  String get tradesMissingReferenceBody => 'Create account and instrument data before adding trades.';
 
   @override
   String get tradesCancel => 'Cancel';

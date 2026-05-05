@@ -1,15 +1,24 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:trading_diary/core/database/models/instrument_model.dart';
 import 'package:trading_diary/core/database/models/trade_fill_model.dart';
 import 'package:trading_diary/core/database/models/trade_model.dart';
+import 'package:trading_diary/core/database/models/trading_account_model.dart';
 import 'package:trading_diary/features/trades/presentation/viewmodels/trades_crud_viewmodel.dart';
+import 'package:trading_diary/repositories/contracts/account_repository.dart';
+import 'package:trading_diary/repositories/contracts/instrument_repository.dart';
 import 'package:trading_diary/repositories/contracts/trade_repository.dart';
 
 void main() {
   test('create, update and delete via trades crud viewmodel', () async {
     final repo = _FakeTradeRepository();
-    final vm = TradesCrudViewModel(repository: repo);
+    final vm = TradesCrudViewModel(
+      repository: repo,
+      accountRepository: _FakeAccountRepository(),
+      instrumentRepository: _FakeInstrumentRepository(),
+    );
 
     await vm.createTrade(
+      accountId: 'acc_1',
       instrumentId: 'ins_fpt',
       direction: 'buy',
       openedAt: DateTime.utc(2026, 5, 1),
@@ -20,6 +29,7 @@ void main() {
     final created = vm.trades.first;
     await vm.updateTrade(
       trade: created,
+      accountId: 'acc_1',
       instrumentId: 'ins_vnm',
       direction: 'sell',
       status: 'closed',
@@ -130,4 +140,48 @@ class _FakeTradeRepository implements TradeRepository {
         )
         .toList(growable: false);
   }
+}
+
+class _FakeAccountRepository implements AccountRepository {
+  @override
+  Future<TradingAccountModel?> getById(String accountId) async => null;
+
+  @override
+  Future<List<TradingAccountModel>> listActive() async => [
+    TradingAccountModel(
+      id: 'acc_1',
+      name: 'Primary',
+      baseCurrency: 'VND',
+      createdAt: DateTime.utc(2026, 1, 1),
+    ),
+  ];
+
+  @override
+  Future<void> upsert(TradingAccountModel account) async {}
+}
+
+class _FakeInstrumentRepository implements InstrumentRepository {
+  @override
+  Future<InstrumentModel?> getById(String instrumentId) async => null;
+
+  @override
+  Future<List<InstrumentModel>> listActive() async => [
+    InstrumentModel(
+      id: 'ins_fpt',
+      symbol: 'FPT',
+      assetClass: 'stock',
+      currency: 'VND',
+      createdAt: DateTime.utc(2026, 1, 1),
+    ),
+    InstrumentModel(
+      id: 'ins_vnm',
+      symbol: 'VNM',
+      assetClass: 'stock',
+      currency: 'VND',
+      createdAt: DateTime.utc(2026, 1, 1),
+    ),
+  ];
+
+  @override
+  Future<void> upsert(InstrumentModel instrument) async {}
 }

@@ -63,6 +63,12 @@ class AppLocalizationsVi extends AppLocalizations {
   String get tradesEditTitle => 'Sửa giao dịch';
 
   @override
+  String get tradesDetailTitle => 'Chi tiết giao dịch';
+
+  @override
+  String get tradesAccountLabel => 'Tài khoản';
+
+  @override
   String get tradesInstrumentLabel => 'Mã instrument';
 
   @override
@@ -91,6 +97,45 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get tradesOpenedAtHint => 'YYYY-MM-DD';
+
+  @override
+  String get tradesQuantityLabel => 'Khối lượng';
+
+  @override
+  String get tradesEntryPriceLabel => 'Giá vào';
+
+  @override
+  String get tradesExitPriceLabel => 'Giá ra';
+
+  @override
+  String get tradesFeeLabel => 'Phí';
+
+  @override
+  String get tradesTaxLabel => 'Thuế';
+
+  @override
+  String get tradesPlanLabel => 'Kế hoạch';
+
+  @override
+  String get tradesReviewLabel => 'Đánh giá';
+
+  @override
+  String get tradesPlanPending => 'Chưa kết nối dữ liệu';
+
+  @override
+  String get tradesReviewPending => 'Chưa kết nối dữ liệu';
+
+  @override
+  String get tradesDateValidationError => 'Vui lòng nhập ngày mở lệnh hợp lệ.';
+
+  @override
+  String get tradesNumberValidationError => 'Vui lòng nhập số hợp lệ.';
+
+  @override
+  String get tradesMissingReferenceTitle => 'Thiếu tài khoản hoặc instrument';
+
+  @override
+  String get tradesMissingReferenceBody => 'Hãy tạo tài khoản và instrument trước khi thêm giao dịch.';
 
   @override
   String get tradesCancel => 'Hủy';
