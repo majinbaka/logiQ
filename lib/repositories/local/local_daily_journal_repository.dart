@@ -34,6 +34,14 @@ class LocalDailyJournalRepository implements DailyJournalRepository {
   }
 
   @override
-  Future<void> upsert(DailyJournalModel journal) =>
-      _journalBox.put(journal.id, journal.toMap());
+  Future<void> upsert(DailyJournalModel journal) async {
+    final existing = await getDailyJournal(
+      journal.accountId,
+      journal.journalDate,
+    );
+    if (existing != null && existing.id != journal.id) {
+      await _journalBox.delete(existing.id);
+    }
+    await _journalBox.put(journal.id, journal.toMap());
+  }
 }

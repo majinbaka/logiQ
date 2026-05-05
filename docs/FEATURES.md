@@ -255,3 +255,13 @@ Da bo sung nen tang cho feature phase tiep theo:
 - Da co local repository implementation dua tren Hive box va map boundary `toMap/fromMap`.
 - Da bo sung validator dung chung cho id, date order, percent/score range va non-negative.
 - Da bo sung deterministic fixtures cho test va local development.
+
+## 12. Phase 03 Portfolio + Daily Journal (2026-05-05)
+
+Da bo sung logic backend va test cho portfolio tracking + daily journal:
+
+- Tinh holdings tu `TRADE_FILL` theo quy tac average cost.
+- Ho tro quote gia thu cong qua `PRICE_QUOTE` va cap nhat market value / unrealized PnL.
+- Sinh `PORTFOLIO_SNAPSHOT` + `POSITION_SNAPSHOT` theo ngay, co daily PnL, cumulative PnL va drawdown.
+- Tach `CASH_MOVEMENT` khoi trading PnL de nap/rut tien khong lam sai lech ket qua giao dich.
+- Enforce uniqueness theo `account + date` cho portfolio snapshot va daily journal.
