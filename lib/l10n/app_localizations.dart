@@ -329,6 +329,120 @@ abstract class AppLocalizations {
   /// **'Portfolio timeline and holdings screens are planned in upcoming implementation slices.'**
   String get portfolioOverviewBody;
 
+  /// No description provided for @portfolioCrudTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Portfolio'**
+  String get portfolioCrudTitle;
+
+  /// No description provided for @portfolioCrudSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create, update, and remove account snapshots.'**
+  String get portfolioCrudSubtitle;
+
+  /// No description provided for @portfolioLoadErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load snapshots'**
+  String get portfolioLoadErrorTitle;
+
+  /// No description provided for @portfolioLoadErrorBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Please retry loading your portfolio snapshots.'**
+  String get portfolioLoadErrorBody;
+
+  /// No description provided for @portfolioRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get portfolioRetry;
+
+  /// No description provided for @portfolioEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No snapshots yet'**
+  String get portfolioEmptyTitle;
+
+  /// No description provided for @portfolioEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Add Snapshot to generate your first portfolio snapshot.'**
+  String get portfolioEmptyBody;
+
+  /// No description provided for @portfolioAddButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Snapshot'**
+  String get portfolioAddButton;
+
+  /// No description provided for @portfolioCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create snapshot'**
+  String get portfolioCreateTitle;
+
+  /// No description provided for @portfolioEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit snapshot'**
+  String get portfolioEditTitle;
+
+  /// No description provided for @portfolioSnapshotDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Snapshot date'**
+  String get portfolioSnapshotDateLabel;
+
+  /// No description provided for @portfolioSnapshotDateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'YYYY-MM-DD'**
+  String get portfolioSnapshotDateHint;
+
+  /// No description provided for @portfolioNoteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get portfolioNoteLabel;
+
+  /// No description provided for @portfolioCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get portfolioCancel;
+
+  /// No description provided for @portfolioSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get portfolioSave;
+
+  /// No description provided for @portfolioValidationMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid snapshot date.'**
+  String get portfolioValidationMessage;
+
+  /// No description provided for @portfolioEquityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Equity'**
+  String get portfolioEquityLabel;
+
+  /// No description provided for @portfolioEditTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit snapshot'**
+  String get portfolioEditTooltip;
+
+  /// No description provided for @portfolioDeleteTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete snapshot'**
+  String get portfolioDeleteTooltip;
+
   /// No description provided for @strategyRiskTitle.
   ///
   /// In en, this message translates to:

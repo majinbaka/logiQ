@@ -126,6 +126,63 @@ class AppLocalizationsEn extends AppLocalizations {
   String get portfolioOverviewBody => 'Portfolio timeline and holdings screens are planned in upcoming implementation slices.';
 
   @override
+  String get portfolioCrudTitle => 'Portfolio';
+
+  @override
+  String get portfolioCrudSubtitle => 'Create, update, and remove account snapshots.';
+
+  @override
+  String get portfolioLoadErrorTitle => 'Could not load snapshots';
+
+  @override
+  String get portfolioLoadErrorBody => 'Please retry loading your portfolio snapshots.';
+
+  @override
+  String get portfolioRetry => 'Retry';
+
+  @override
+  String get portfolioEmptyTitle => 'No snapshots yet';
+
+  @override
+  String get portfolioEmptyBody => 'Tap Add Snapshot to generate your first portfolio snapshot.';
+
+  @override
+  String get portfolioAddButton => 'Add Snapshot';
+
+  @override
+  String get portfolioCreateTitle => 'Create snapshot';
+
+  @override
+  String get portfolioEditTitle => 'Edit snapshot';
+
+  @override
+  String get portfolioSnapshotDateLabel => 'Snapshot date';
+
+  @override
+  String get portfolioSnapshotDateHint => 'YYYY-MM-DD';
+
+  @override
+  String get portfolioNoteLabel => 'Note';
+
+  @override
+  String get portfolioCancel => 'Cancel';
+
+  @override
+  String get portfolioSave => 'Save';
+
+  @override
+  String get portfolioValidationMessage => 'Please enter a valid snapshot date.';
+
+  @override
+  String get portfolioEquityLabel => 'Equity';
+
+  @override
+  String get portfolioEditTooltip => 'Edit snapshot';
+
+  @override
+  String get portfolioDeleteTooltip => 'Delete snapshot';
+
+  @override
   String get strategyRiskTitle => 'Strategy and Risk';
 
   @override

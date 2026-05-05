@@ -83,6 +83,12 @@ class LocalPortfolioRepository implements PortfolioRepository {
       _quoteBox.put(quote.id, quote.toMap());
 
   @override
+  Future<void> deleteSnapshot(String snapshotId) async {
+    await _deleteSnapshotPositions(snapshotId);
+    await _snapshotBox.delete(snapshotId);
+  }
+
+  @override
   Future<List<PositionSnapshotModel>> listPositionSnapshots(
     String snapshotId,
   ) async {

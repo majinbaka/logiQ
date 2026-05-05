@@ -36,7 +36,7 @@ void main() {
     await tester.tap(find.text('Portfolio').last);
     await tester.pumpAndSettle();
     expect(
-      find.text('Track holdings, allocation, and account snapshots.'),
+      find.text('Create, update, and remove account snapshots.'),
       findsOneWidget,
     );
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trading_diary/features/daily_journal/presentation/views/daily_journal_view.dart';
 import 'package:trading_diary/features/insights/presentation/views/insights_view.dart';
-import 'package:trading_diary/features/portfolio/presentation/views/portfolio_overview_view.dart';
+import 'package:trading_diary/features/portfolio/presentation/views/portfolio_crud_view.dart';
 import 'package:trading_diary/features/psychology/presentation/views/psychology_view.dart';
 import 'package:trading_diary/features/strategy/presentation/views/strategy_risk_view.dart';
 import 'package:trading_diary/features/trades/presentation/views/trades_crud_view.dart';
@@ -29,7 +29,7 @@ class _AppShellState extends State<AppShell> {
       _ShellTab(
         label: l10n.navPortfolio,
         icon: Icons.pie_chart_outline,
-        body: const PortfolioOverviewView(),
+        body: const PortfolioCrudView(),
       ),
       _ShellTab(
         label: l10n.navStrategy,

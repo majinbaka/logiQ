@@ -324,3 +324,24 @@ Da bo sung test:
 
 - Widget test dieu huong app shell co khoi tao storage cho tab Trades.
 - Unit test cho `TradesCrudViewModel` bao phu create/update/delete.
+
+## 16. Portfolio CRUD Slice (2026-05-05)
+
+Da bo sung flow CRUD toi thieu cho tab Portfolio:
+
+- `PortfolioCrudView` duoc map vao tab Portfolio trong `AppShell`.
+- Co the tao snapshot moi theo ngay va note (generate snapshot).
+- Co the cap nhat note snapshot da co.
+- Co the xoa snapshot (kem position snapshots lien quan).
+- Co state loading/empty/error va retry.
+- Toan bo text UI moi da duoc noi dia hoa EN/VI.
+
+Cap nhat repository:
+
+- Bo sung `deleteSnapshot(snapshotId)` vao `PortfolioRepository`.
+- Local implementation xoa snapshot va cascade xoa position snapshots lien quan.
+
+Da bo sung test:
+
+- Unit test cho `PortfolioCrudViewModel` bao phu create/update/delete.
+- Cap nhat widget test app shell de assert tab Portfolio theo UI moi.

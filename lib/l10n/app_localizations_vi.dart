@@ -126,6 +126,63 @@ class AppLocalizationsVi extends AppLocalizations {
   String get portfolioOverviewBody => 'Màn hình timeline danh mục và holdings sẽ được bổ sung ở các lát cắt sắp tới.';
 
   @override
+  String get portfolioCrudTitle => 'Danh mục';
+
+  @override
+  String get portfolioCrudSubtitle => 'Tạo, cập nhật và xóa snapshot tài khoản.';
+
+  @override
+  String get portfolioLoadErrorTitle => 'Không thể tải snapshot';
+
+  @override
+  String get portfolioLoadErrorBody => 'Vui lòng thử tải lại snapshot danh mục.';
+
+  @override
+  String get portfolioRetry => 'Thử lại';
+
+  @override
+  String get portfolioEmptyTitle => 'Chưa có snapshot';
+
+  @override
+  String get portfolioEmptyBody => 'Nhấn Thêm snapshot để tạo snapshot danh mục đầu tiên.';
+
+  @override
+  String get portfolioAddButton => 'Thêm snapshot';
+
+  @override
+  String get portfolioCreateTitle => 'Tạo snapshot';
+
+  @override
+  String get portfolioEditTitle => 'Sửa snapshot';
+
+  @override
+  String get portfolioSnapshotDateLabel => 'Ngày snapshot';
+
+  @override
+  String get portfolioSnapshotDateHint => 'YYYY-MM-DD';
+
+  @override
+  String get portfolioNoteLabel => 'Ghi chú';
+
+  @override
+  String get portfolioCancel => 'Hủy';
+
+  @override
+  String get portfolioSave => 'Lưu';
+
+  @override
+  String get portfolioValidationMessage => 'Vui lòng nhập ngày snapshot hợp lệ.';
+
+  @override
+  String get portfolioEquityLabel => 'Vốn chủ';
+
+  @override
+  String get portfolioEditTooltip => 'Sửa snapshot';
+
+  @override
+  String get portfolioDeleteTooltip => 'Xóa snapshot';
+
+  @override
   String get strategyRiskTitle => 'Chiến lược và rủi ro';
 
   @override
