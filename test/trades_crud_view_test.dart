@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:trading_diary/app/app.dart';
 import 'package:trading_diary/core/storage/storage_boxes.dart';
 import 'package:trading_diary/core/storage/storage_initializer.dart';
+import 'package:trading_diary/l10n/app_localizations.dart';
 
 void main() {
   late Directory dir;
@@ -42,11 +44,32 @@ void main() {
   });
 
   tearDown(() async {
-    await Hive.deleteFromDisk();
-    await dir.delete(recursive: true);
+    for (final boxName in StorageBoxes.all) {
+      if (!Hive.isBoxOpen(boxName)) continue;
+      try {
+        await Hive.box<Map>(boxName).close().timeout(const Duration(seconds: 2));
+      } on TimeoutException {
+        // Avoid blocking the whole test process if Hive box shutdown stalls.
+      }
+    }
+    if (await dir.exists()) {
+      try {
+        await dir.delete(recursive: true);
+      } catch (_) {
+        // Best-effort temp cleanup for test stability.
+      }
+    }
   });
 
   testWidgets('trades supports detail screen navigation', (tester) async {
+    tester.view.physicalSize = const Size(1200, 2000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+    addTearDown(() async {
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+    });
+
     await tester.pumpWidget(const MainApp());
     await tester.pumpAndSettle();
 
@@ -56,5 +79,127 @@ void main() {
     expect(find.text('Trade detail'), findsOneWidget);
     expect(find.text('Plan'), findsOneWidget);
     expect(find.text('Review'), findsOneWidget);
+  });
+
+  testWidgets('trades supports create flow from form', (tester) async {
+    tester.view.physicalSize = const Size(1200, 2000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+    addTearDown(() async {
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+    });
+
+    await tester.pumpWidget(const MainApp());
+    await tester.pump(const Duration(seconds: 1));
+
+    expect(Hive.box<Map>(StorageBoxes.trades).length, 1);
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pump(const Duration(milliseconds: 300));
+
+    final openedAtField = find.byKey(const Key('trade_form_opened_at'));
+    await tester.enterText(openedAtField, '2026-04-01');
+
+    tester.testTextInput.hide();
+    await tester.pump(const Duration(milliseconds: 200));
+    await tester.tap(find.byKey(const Key('trade_form_save')));
+    await tester.pump(const Duration(seconds: 1));
+
+    final trades = Hive.box<Map>(StorageBoxes.trades);
+    expect(trades.length, 2);
+
+    final created = trades.values
+        .map((raw) => Map<String, dynamic>.from(raw.cast<String, dynamic>()))
+        .firstWhere((item) => item['id'] != 'tr_1');
+    expect(created['id'], isNotNull);
+  });
+
+  testWidgets('trades supports edit flow from list action', (tester) async {
+    tester.view.physicalSize = const Size(1200, 2000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+    addTearDown(() async {
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+    });
+
+    await tester.pumpWidget(const MainApp());
+    await tester.pump(const Duration(seconds: 1));
+
+    await tester.tap(find.byIcon(Icons.edit_outlined).first);
+    await tester.pump(const Duration(milliseconds: 300));
+
+    final openedAtField = find.byKey(const Key('trade_form_opened_at'));
+    await tester.enterText(openedAtField, '2026-02-15');
+
+    tester.testTextInput.hide();
+    await tester.pump(const Duration(milliseconds: 200));
+    await tester.tap(find.byKey(const Key('trade_form_save')));
+    await tester.pump(const Duration(seconds: 1));
+
+    final updated = Map<String, dynamic>.from(
+      Hive.box<Map>(StorageBoxes.trades).get('tr_1')!.cast<String, dynamic>(),
+    );
+    expect(updated['updated_at'], isNotNull);
+  });
+
+  testWidgets('trades supports delete flow from list action', (tester) async {
+    tester.view.physicalSize = const Size(1200, 2000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+    addTearDown(() async {
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+    });
+
+    await tester.pumpWidget(const MainApp());
+    await tester.pump(const Duration(seconds: 1));
+
+    await tester.tap(find.byIcon(Icons.delete_outline).first);
+    await tester.pump(const Duration(seconds: 1));
+
+    final deleted = Map<String, dynamic>.from(
+      Hive.box<Map>(StorageBoxes.trades).get('tr_1')!.cast<String, dynamic>(),
+    );
+    expect(deleted['deleted_at'], isNotNull);
+    expect(Hive.box<Map>(StorageBoxes.trades).length, 1);
+  });
+
+  testWidgets('trades form shows validation errors for invalid input', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 2000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+    addTearDown(() async {
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+    });
+
+    await tester.pumpWidget(const MainApp());
+    await tester.pump(const Duration(seconds: 1));
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pump(const Duration(milliseconds: 300));
+
+    final openedAtField = find.byKey(const Key('trade_form_opened_at'));
+    await tester.ensureVisible(openedAtField);
+    await tester.enterText(openedAtField, 'bad-date');
+
+    final quantityField = find.byKey(const Key('trade_form_quantity'));
+    await tester.ensureVisible(quantityField);
+    await tester.enterText(quantityField, 'abc');
+
+    tester.testTextInput.hide();
+    await tester.pump(const Duration(milliseconds: 200));
+    await tester.tap(find.byKey(const Key('trade_form_save')));
+    await tester.pump(const Duration(milliseconds: 300));
+
+    final context = tester.element(find.byKey(const Key('trade_form_save')));
+    final l10n = AppLocalizations.of(context)!;
+    expect(find.text(l10n.tradesDateValidationError), findsOneWidget);
+    expect(find.text(l10n.tradesNumberValidationError), findsOneWidget);
+    expect(Hive.box<Map>(StorageBoxes.trades).length, 1);
   });
 }

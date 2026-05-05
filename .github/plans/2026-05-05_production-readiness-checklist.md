@@ -105,7 +105,7 @@ Date: 2026-05-05
   - AC: Create/Edit trade form uses account and instrument pickers; invalid IDs cannot be submitted.
 - [x] Task T3: Trades form validation UX
   - AC: Inline validation errors are shown for required fields/date constraints; no silent failure.
-- [ ] Task T4: Trades widget tests
+- [x] Task T4: Trades widget tests
   - AC: Widget tests cover create, edit, delete, and validation error states for Trades flow.
 
 ### Portfolio
