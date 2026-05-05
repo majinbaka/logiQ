@@ -291,3 +291,20 @@ Da bo sung logic backend va test cho psychology tracking + instrument notes:
 - `INSTRUMENT_NOTE_UPDATE`:
   - luu timeline cap nhat va tra ve theo thu tu moi nhat truoc.
 - Ho tro lay danh sach `TRADE` lien ket theo `instrumentId` de phuc vu man hinh note detail.
+
+## 14. App Shell Overview Screens (2026-05-05)
+
+Da thay placeholder text bang 6 man hinh overview theo tab navigation:
+
+- Trades overview
+- Portfolio overview
+- Strategy and risk overview
+- Daily journal overview
+- Psychology overview
+- Analytics and insights overview
+
+Cap nhat lien quan:
+
+- Moi screen duoc dat theo feature-first structure `features/<feature>/presentation/views`.
+- Toan bo user-facing text tren cac screen nay da duoc noi dia hoa EN/VI qua ARB.
+- Da bo sung widget test dieu huong tab de xac nhan shell co the chuyen qua tung module.
