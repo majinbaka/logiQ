@@ -1,7 +1,5 @@
-import 'package:flutter/widgets.dart';
+import 'bootstrap.dart';
 
-import 'app/app.dart';
-
-void main() {
-  runApp(const MainApp());
+Future<void> main() async {
+  await bootstrap();
 }

@@ -1,0 +1,22 @@
+{
+  "@@locale": "en",
+  "appTitle": "Trading Diary",
+  "@appTitle": {
+    "description": "Application title"
+  },
+  "navTrades": "Trades",
+  "navPortfolio": "Portfolio",
+  "navStrategy": "Strategy",
+  "navJournal": "Journal",
+  "navPsychology": "Psychology",
+  "navInsights": "Insights",
+  "modulePlaceholder": "{module} module is coming soon.",
+  "@modulePlaceholder": {
+    "description": "Placeholder for shell destination",
+    "placeholders": {
+      "module": {
+        "type": "String"
+      }
+    }
+  }
+}

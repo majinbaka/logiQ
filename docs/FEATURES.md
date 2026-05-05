@@ -244,3 +244,14 @@ Cap nhat bo psychology widget:
 
 Bo widget nay dang duoc map vao man hinh gallery de lam mau cho cac page trade-list,
 trade-detail-editor, strategy-risk, psychology.
+
+## 11. Phase 01 Foundation (2026-05-05)
+
+Da bo sung nen tang cho feature phase tiep theo:
+
+- App khoi dong qua `bootstrap()` va co `StorageInitializer` idempotent.
+- App shell co dieu huong placeholder cho module va da noi dia hoa (EN/VI) bang ARB.
+- Da khai bao repository contracts cho account/instrument/strategy/trade/portfolio/journal/psychology/instrument-note/risk/analytics/insight.
+- Da co local repository implementation dua tren Hive box va map boundary `toMap/fromMap`.
+- Da bo sung validator dung chung cho id, date order, percent/score range va non-negative.
+- Da bo sung deterministic fixtures cho test va local development.

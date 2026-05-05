@@ -1,0 +1,11 @@
+{
+  "@@locale": "vi",
+  "appTitle": "Trading Diary",
+  "navTrades": "Giao dịch",
+  "navPortfolio": "Danh mục",
+  "navStrategy": "Chiến lược",
+  "navJournal": "Nhật ký",
+  "navPsychology": "Tâm lý",
+  "navInsights": "Nhận định",
+  "modulePlaceholder": "Module {module} sẽ sớm có mặt."
+}
