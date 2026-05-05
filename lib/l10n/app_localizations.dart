@@ -137,6 +137,120 @@ abstract class AppLocalizations {
   /// **'Insights'**
   String get navInsights;
 
+  /// No description provided for @workInProgressTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Work in progress'**
+  String get workInProgressTitle;
+
+  /// No description provided for @tradesOverviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trading Journal'**
+  String get tradesOverviewTitle;
+
+  /// No description provided for @tradesOverviewSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Capture and review your executed trades.'**
+  String get tradesOverviewSubtitle;
+
+  /// No description provided for @tradesOverviewBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Trade list and trade detail flows will be connected in the next implementation slices.'**
+  String get tradesOverviewBody;
+
+  /// No description provided for @portfolioOverviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Portfolio Overview'**
+  String get portfolioOverviewTitle;
+
+  /// No description provided for @portfolioOverviewSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track holdings, allocation, and account snapshots.'**
+  String get portfolioOverviewSubtitle;
+
+  /// No description provided for @portfolioOverviewBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Portfolio timeline and holdings screens are planned in upcoming implementation slices.'**
+  String get portfolioOverviewBody;
+
+  /// No description provided for @strategyRiskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Strategy and Risk'**
+  String get strategyRiskTitle;
+
+  /// No description provided for @strategyRiskSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Define strategy rules and enforce risk boundaries.'**
+  String get strategyRiskSubtitle;
+
+  /// No description provided for @strategyRiskBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Strategy versioning and risk checks are ready in data layer and will be surfaced in UI next.'**
+  String get strategyRiskBody;
+
+  /// No description provided for @dailyJournalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Journal'**
+  String get dailyJournalTitle;
+
+  /// No description provided for @dailyJournalSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan before market and review after market.'**
+  String get dailyJournalSubtitle;
+
+  /// No description provided for @dailyJournalBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily planning and post-session review forms will be added in next iterations.'**
+  String get dailyJournalBody;
+
+  /// No description provided for @psychologyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trading Psychology'**
+  String get psychologyTitle;
+
+  /// No description provided for @psychologySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Record emotions, behavior tags, and discipline signals.'**
+  String get psychologySubtitle;
+
+  /// No description provided for @psychologyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Emotion log and behavior analysis screens will be wired to repositories in upcoming slices.'**
+  String get psychologyBody;
+
+  /// No description provided for @insightsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Analytics and Insights'**
+  String get insightsTitle;
+
+  /// No description provided for @insightsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn trade history into measurable improvements.'**
+  String get insightsSubtitle;
+
+  /// No description provided for @insightsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard, comparisons, and rule-based insight inbox are the next UI milestones.'**
+  String get insightsBody;
+
   /// Placeholder for shell destination
   ///
   /// In en, this message translates to:
