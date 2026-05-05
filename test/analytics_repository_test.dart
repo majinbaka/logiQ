@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
+import 'package:trading_diary/core/database/models/analytics_daily_account_fact_model.dart';
+import 'package:trading_diary/core/database/models/analytics_trade_fact_model.dart';
 import 'package:trading_diary/core/database/models/emotion_log_model.dart';
 import 'package:trading_diary/core/database/models/portfolio_snapshot_model.dart';
 import 'package:trading_diary/core/database/models/risk_check_model.dart';
@@ -120,19 +122,93 @@ void main() {
       DateTime.utc(2026, 5, 2),
     );
 
-    final tradeFacts = Hive.box<Map>(StorageBoxes.analyticsTradeFacts).values.toList();
+    final tradeFacts = Hive.box<Map>(
+      StorageBoxes.analyticsTradeFacts,
+    ).values.toList();
     expect(tradeFacts.length, 1);
-    final tradeFact = Map<String, dynamic>.from(tradeFacts.first.cast<String, dynamic>());
+    final tradeFact = Map<String, dynamic>.from(
+      tradeFacts.first.cast<String, dynamic>(),
+    );
     expect(tradeFact['trade_id'], trade.id);
     expect(tradeFact['followed_plan'], true);
     expect(tradeFact['risk_violation'], true);
     expect(tradeFact['primary_emotion'], 'fomo');
 
-    final dailyFacts = Hive.box<Map>(StorageBoxes.analyticsDailyAccountFacts).values.toList();
+    final dailyFacts = Hive.box<Map>(
+      StorageBoxes.analyticsDailyAccountFacts,
+    ).values.toList();
     expect(dailyFacts.length, 1);
-    final dailyFact = Map<String, dynamic>.from(dailyFacts.first.cast<String, dynamic>());
+    final dailyFact = Map<String, dynamic>.from(
+      dailyFacts.first.cast<String, dynamic>(),
+    );
     expect(dailyFact['trade_count'], 1);
     expect(dailyFact['win_count'], 1);
     expect(dailyFact['loss_count'], 0);
+  });
+
+  test('clearAnalyticsFacts removes only target account facts', () async {
+    await Hive.box<Map>(StorageBoxes.analyticsTradeFacts).put(
+      'atf_a',
+      AnalyticsTradeFactModel(
+        id: 'atf_a',
+        tradeId: 'tr_a',
+        accountId: 'acc_1',
+        instrumentId: 'AAPL',
+        direction: 'buy',
+        generatedAt: DateTime.utc(2026, 5, 1),
+      ).toMap(),
+    );
+    await Hive.box<Map>(StorageBoxes.analyticsTradeFacts).put(
+      'atf_b',
+      AnalyticsTradeFactModel(
+        id: 'atf_b',
+        tradeId: 'tr_b',
+        accountId: 'acc_2',
+        instrumentId: 'AAPL',
+        direction: 'buy',
+        generatedAt: DateTime.utc(2026, 5, 1),
+      ).toMap(),
+    );
+    await Hive.box<Map>(StorageBoxes.analyticsDailyAccountFacts).put(
+      'adf_a',
+      AnalyticsDailyAccountFactModel(
+        id: 'adf_a',
+        accountId: 'acc_1',
+        metricDate: DateTime.utc(2026, 5, 1),
+        generatedAt: DateTime.utc(2026, 5, 1),
+      ).toMap(),
+    );
+    await Hive.box<Map>(StorageBoxes.analyticsDailyAccountFacts).put(
+      'adf_b',
+      AnalyticsDailyAccountFactModel(
+        id: 'adf_b',
+        accountId: 'acc_2',
+        metricDate: DateTime.utc(2026, 5, 1),
+        generatedAt: DateTime.utc(2026, 5, 1),
+      ).toMap(),
+    );
+
+    await repository.clearAnalyticsFacts('acc_1');
+
+    expect(
+      Hive.box<Map>(StorageBoxes.analyticsTradeFacts).containsKey('atf_a'),
+      false,
+    );
+    expect(
+      Hive.box<Map>(
+        StorageBoxes.analyticsDailyAccountFacts,
+      ).containsKey('adf_a'),
+      false,
+    );
+    expect(
+      Hive.box<Map>(StorageBoxes.analyticsTradeFacts).containsKey('atf_b'),
+      true,
+    );
+    expect(
+      Hive.box<Map>(
+        StorageBoxes.analyticsDailyAccountFacts,
+      ).containsKey('adf_b'),
+      true,
+    );
   });
 }

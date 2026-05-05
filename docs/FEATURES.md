@@ -258,6 +258,15 @@ Da bo sung nen tang cho feature phase tiep theo:
 
 ## 12. Phase 03 Portfolio + Daily Journal (2026-05-05)
 
+## 13. Phase 05 Analytics + Insights (2026-05-05)
+
+Da bo sung nen tang service cho analytics va insight rebuild:
+
+- Them `AnalyticsTradeFactBuilder` de materialize trade facts tu trade + plan/review/risk/emotion/context.
+- Them `AnalyticsDailyAccountFactBuilder` de materialize daily facts tu portfolio snapshots, co fallback theo trade khi chua co snapshot.
+- Them `AnalyticsRebuildService` de dieu phoi full rebuild, rebuild theo date range, rebuild theo trade-level va optional regenerate insights.
+- Mo rong `AnalyticsRepository` voi `clearAnalyticsFacts(accountId)` de dam bao safe clear/regenerate analytics cache theo account.
+
 Da bo sung logic backend va test cho portfolio tracking + daily journal:
 
 - Tinh holdings tu `TRADE_FILL` theo quy tac average cost.

@@ -1,4 +1,6 @@
 abstract class AnalyticsRepository {
+  Future<void> clearAnalyticsFacts(String accountId);
+
   Future<void> rebuildAllAnalyticsFacts(String accountId);
 
   Future<void> rebuildAnalyticsFacts(
