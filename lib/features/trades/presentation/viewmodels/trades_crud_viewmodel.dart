@@ -172,6 +172,12 @@ class TradesCrudViewModel extends ChangeNotifier {
     if (enforceTradeFlowValidation) {
       await _assertTradeFlowReady(accountId: accountId);
     }
+    await _validateAvailableCashForTrade(
+      accountId: accountId,
+      direction: direction,
+      quantityOpened: quantityOpened,
+      avgEntryPrice: avgEntryPrice,
+    );
     final normalizedDirection = direction.toLowerCase();
     await _validateQuantityBeforeSave(
       existingTradeId: null,
@@ -214,6 +220,39 @@ class TradesCrudViewModel extends ChangeNotifier {
     await _rebuildAnalyticsForTrade(createdTrade);
 
     await loadTrades();
+  }
+
+  Future<void> _validateAvailableCashForTrade({
+    required String accountId,
+    required String direction,
+    required String? quantityOpened,
+    required String? avgEntryPrice,
+  }) async {
+    final normalizedDirection = direction.trim().toLowerCase();
+    final isEntrySide = normalizedDirection == 'long' || normalizedDirection == 'buy';
+    if (!isEntrySide) return;
+
+    final balance = await _portfolioRepository.getAccountBalance(accountId);
+    final buyingPower = _toDouble(balance?.buyingPower);
+    if (buyingPower <= 0) {
+      throw TradeInsufficientCashException(
+        requiredCash: 0,
+        availableCash: buyingPower,
+      );
+    }
+
+    final quantity = _toDouble(quantityOpened);
+    final avgEntry = _toDouble(avgEntryPrice);
+    final requiredCash = quantity > 0 && avgEntry > 0
+        ? (quantity * avgEntry).toDouble()
+        : 0.0;
+    if (requiredCash <= 0) return;
+    if (buyingPower + 1e-9 < requiredCash) {
+      throw TradeInsufficientCashException(
+        requiredCash: requiredCash,
+        availableCash: buyingPower,
+      );
+    }
   }
 
   Future<void> updateTrade({

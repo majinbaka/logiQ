@@ -58,6 +58,7 @@ class _TradesCrudViewState extends State<TradesCrudView> {
             insightRepository: LocalInsightRepository(),
           ),
           defaultAccountId: widget.defaultAccountId,
+          enforceTradeFlowValidation: true,
         );
     _viewModel.loadTrades();
   }

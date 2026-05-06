@@ -134,6 +134,33 @@ void main() {
     );
   });
 
+  test('reject create buy trade when buying power is zero', () async {
+    final repo = _FakeTradeRepository();
+    final portfolioRepo = _FakePortfolioRepository(
+      buyingPower: '0',
+      availableCash: '0',
+    );
+    final vm = TradesCrudViewModel(
+      repository: repo,
+      accountRepository: _FakeAccountRepository(),
+      instrumentRepository: _FakeInstrumentRepository(),
+      portfolioRepository: portfolioRepo,
+      riskRepository: _FakeRiskRepository(),
+      strategyRepository: _FakeStrategyRepository(),
+      defaultAccountId: 'acc_1',
+    );
+
+    await expectLater(
+      () => vm.createTrade(
+        accountId: 'acc_1',
+        instrumentId: 'ins_fpt',
+        direction: 'buy',
+        openedAt: DateTime.utc(2026, 5, 1),
+      ),
+      throwsA(isA<TradeInsufficientCashException>()),
+    );
+  });
+
   test('reserve then release cash when pending order is canceled', () async {
     final repo = _FakeTradeRepository();
     final portfolioRepo = _FakePortfolioRepository();
