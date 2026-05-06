@@ -45,3 +45,11 @@
 - **Description:** User had no UI path to insert/update trading accounts, and multiple flows were pinned to `acc_1`.
 - **Root cause:** Account repository existed but no Account Settings screen/tab and no selected-account wiring into key view flows.
 - **Fix / workaround:** Added Account Settings tab with create/update/select account flow; wired selected account into Trades and Portfolio defaults.
+
+## [RESOLVED] Deposit created but cash stayed zero when currency casing differed  (STATUS: RESOLVED)
+- **Date found:** 2026-05-06
+- **Date resolved:** 2026-05-06
+- **Affected files:** lib/repositories/local/local_portfolio_repository.dart, test/portfolio_repository_test.dart
+- **Description:** After creating a deposit, trading cash could still display `0`, blocking trade creation with insufficient-cash validation.
+- **Root cause:** Account-balance keying used raw `currency` text (case-sensitive), so writes like `vnd` were not found by reads expecting `VND`.
+- **Fix / workaround:** Normalized currency consistently to uppercase for all balance read/write/create paths and added regression test for mixed-case currency lookup.

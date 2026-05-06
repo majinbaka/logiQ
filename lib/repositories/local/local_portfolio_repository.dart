@@ -123,9 +123,7 @@ class LocalPortfolioRepository implements PortfolioRepository {
   @override
   Future<void> upsertCashLedger(CashLedgerModel ledger, {String? currency}) async {
     await _cashLedgerBox.put(ledger.id, ledger.toMap());
-    final normalizedCurrency = (currency ?? 'VND').trim().isEmpty
-        ? 'VND'
-        : currency!.trim();
+    final normalizedCurrency = _normalizeCurrency(currency);
     final current = await getAccountBalance(
       ledger.accountId,
       currency: normalizedCurrency,
@@ -311,9 +309,7 @@ class LocalPortfolioRepository implements PortfolioRepository {
     String accountId, {
     String? currency,
   }) async {
-    final normalizedCurrency = (currency ?? 'VND').trim().isEmpty
-        ? 'VND'
-        : currency!.trim();
+    final normalizedCurrency = _normalizeCurrency(currency);
     final key = '${accountId}_$normalizedCurrency';
     final raw = _accountBalanceBox.get(key);
     if (raw == null) return null;
@@ -325,12 +321,16 @@ class LocalPortfolioRepository implements PortfolioRepository {
     String currency,
     DateTime at,
   ) async {
-    final existing = await getAccountBalance(accountId, currency: currency);
+    final normalizedCurrency = _normalizeCurrency(currency);
+    final existing = await getAccountBalance(
+      accountId,
+      currency: normalizedCurrency,
+    );
     if (existing != null) return existing;
     return AccountBalanceModel(
-      id: '${accountId}_${currency.trim()}',
+      id: '${accountId}_$normalizedCurrency',
       accountId: accountId,
-      currency: currency.trim(),
+      currency: normalizedCurrency,
       currentCashBalance: '0',
       availableCash: '0',
       reservedCash: '0',
@@ -765,6 +765,12 @@ class LocalPortfolioRepository implements PortfolioRepository {
         .toStringAsFixed(8)
         .replaceFirst(RegExp(r'0+$'), '')
         .replaceFirst(RegExp(r'\.$'), '');
+  }
+
+  String _normalizeCurrency(String? value) {
+    final normalized = (value ?? 'VND').trim();
+    if (normalized.isEmpty) return 'VND';
+    return normalized.toUpperCase();
   }
 
   double _normalizeCashMovementAmount({

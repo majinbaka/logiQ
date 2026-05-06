@@ -303,4 +303,32 @@ void main() {
     expect(snapshot.snapshot.positionsMarketValue, '720');
     expect(snapshot.snapshot.totalEquity, '1200');
   });
+
+  test('account balance lookup is currency case-insensitive', () async {
+    await repository.upsertCashMovement(
+      CashMovementModel(
+        id: 'cm_case',
+        accountId: 'acc_case',
+        movementDate: DateTime.utc(2026, 5, 1),
+        movementType: 'deposit',
+        amount: '500',
+        currency: 'vnd',
+        createdAt: DateTime.utc(2026, 5, 1),
+      ),
+    );
+
+    final balanceUpper = await repository.getAccountBalance(
+      'acc_case',
+      currency: 'VND',
+    );
+    final balanceLower = await repository.getAccountBalance(
+      'acc_case',
+      currency: 'vnd',
+    );
+
+    expect(balanceUpper, isNotNull);
+    expect(balanceUpper!.currentCashBalance, '500');
+    expect(balanceLower, isNotNull);
+    expect(balanceLower!.buyingPower, '500');
+  });
 }
