@@ -6,7 +6,11 @@ import 'package:logiq/core/database/models/strategy_model.dart';
 import 'package:logiq/core/database/models/strategy_version_model.dart';
 import 'package:logiq/core/database/models/trade_fill_model.dart';
 import 'package:logiq/core/database/models/trade_model.dart';
+import 'package:logiq/core/database/models/trade_context_model.dart';
 import 'package:logiq/core/database/models/trade_order_model.dart';
+import 'package:logiq/core/database/models/trade_plan_model.dart';
+import 'package:logiq/core/database/models/trade_plan_target_model.dart';
+import 'package:logiq/core/database/models/trade_review_model.dart';
 import 'package:logiq/core/database/models/trading_account_model.dart';
 import 'package:logiq/features/trades/presentation/viewmodels/trades_crud_viewmodel.dart';
 import 'package:logiq/repositories/contracts/account_repository.dart';
@@ -108,6 +112,10 @@ class _FakeRiskRepository implements RiskRepository {
 class _FakeTradeRepository implements TradeRepository {
   final Map<String, TradeModel> _store = {};
   final Map<String, TradeOrderModel> _orderStore = {};
+  final Map<String, TradePlanModel> _planStore = {};
+  final Map<String, TradePlanTargetModel> _planTargetStore = {};
+  final Map<String, TradeReviewModel> _reviewStore = {};
+  final Map<String, TradeContextModel> _contextStore = {};
   int _idCounter = 0;
 
   @override
@@ -140,10 +148,55 @@ class _FakeTradeRepository implements TradeRepository {
       _orderStore[orderId];
 
   @override
+  Future<TradePlanModel?> getPlanById(String planId) async =>
+      _planStore[planId];
+
+  @override
+  Future<TradePlanModel?> getLatestPlanByTrade(String tradeId) async {
+    return _latestByTrade(
+      tradeId: tradeId,
+      values: _planStore.values,
+      readTradeId: (item) => item.tradeId,
+      readCreatedAt: (item) => item.createdAt,
+    );
+  }
+
+  @override
+  Future<TradeReviewModel?> getLatestReviewByTrade(String tradeId) async {
+    return _latestByTrade(
+      tradeId: tradeId,
+      values: _reviewStore.values,
+      readTradeId: (item) => item.tradeId,
+      readCreatedAt: (item) => item.createdAt,
+    );
+  }
+
+  @override
+  Future<TradeContextModel?> getLatestContextByTrade(String tradeId) async {
+    return _latestByTrade(
+      tradeId: tradeId,
+      values: _contextStore.values,
+      readTradeId: (item) => item.tradeId,
+      readCreatedAt: (item) => item.createdAt,
+    );
+  }
+
+  @override
   Future<List<TradeOrderModel>> listOrdersByTrade(String tradeId) async {
     return _orderStore.values
         .where((order) => order.tradeId == tradeId && order.deletedAt == null)
         .toList(growable: false);
+  }
+
+  @override
+  Future<List<TradePlanTargetModel>> listPlanTargetsByPlan(
+    String tradePlanId,
+  ) async {
+    final results = _planTargetStore.values
+        .where((item) => item.tradePlanId == tradePlanId)
+        .toList(growable: false);
+    results.sort((a, b) => a.targetOrder.compareTo(b.targetOrder));
+    return results;
   }
 
   @override
@@ -219,11 +272,36 @@ class _FakeTradeRepository implements TradeRepository {
   }
 
   @override
+  Future<void> deletePlanTarget(String targetId) async {
+    _planTargetStore.remove(targetId);
+  }
+
+  @override
   Future<void> upsertFill(TradeFillModel fill) async {}
 
   @override
   Future<void> upsertOrder(TradeOrderModel order) async {
     _orderStore[order.id] = order;
+  }
+
+  @override
+  Future<void> upsertPlan(TradePlanModel plan) async {
+    _planStore[plan.id] = plan;
+  }
+
+  @override
+  Future<void> upsertPlanTarget(TradePlanTargetModel target) async {
+    _planTargetStore[target.id] = target;
+  }
+
+  @override
+  Future<void> upsertReview(TradeReviewModel review) async {
+    _reviewStore[review.id] = review;
+  }
+
+  @override
+  Future<void> upsertContext(TradeContextModel context) async {
+    _contextStore[context.id] = context;
   }
 
   @override
@@ -238,6 +316,25 @@ class _FakeTradeRepository implements TradeRepository {
           (trade) => trade.accountId == accountId && trade.status == 'open',
         )
         .toList(growable: false);
+  }
+
+  T? _latestByTrade<T>({
+    required String tradeId,
+    required Iterable<T> values,
+    required String Function(T item) readTradeId,
+    required DateTime Function(T item) readCreatedAt,
+  }) {
+    T? latest;
+    DateTime? latestCreatedAt;
+    for (final item in values) {
+      if (readTradeId(item) != tradeId) continue;
+      final createdAt = readCreatedAt(item);
+      if (latestCreatedAt == null || createdAt.isAfter(latestCreatedAt)) {
+        latest = item;
+        latestCreatedAt = createdAt;
+      }
+    }
+    return latest;
   }
 }
 

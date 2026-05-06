@@ -2,9 +2,13 @@ import 'dart:async';
 
 import 'package:hive/hive.dart';
 
+import '../../core/database/models/trade_context_model.dart';
 import '../../core/database/models/trade_fill_model.dart';
 import '../../core/database/models/trade_model.dart';
 import '../../core/database/models/trade_order_model.dart';
+import '../../core/database/models/trade_plan_model.dart';
+import '../../core/database/models/trade_plan_target_model.dart';
+import '../../core/database/models/trade_review_model.dart';
 import '../../core/storage/storage_boxes.dart';
 import '../../core/system/clock.dart';
 import '../../core/system/id_generator.dart';
@@ -17,17 +21,30 @@ class LocalTradeRepository implements TradeRepository {
     Box<Map>? tradeBox,
     Box<Map>? orderBox,
     Box<Map>? fillBox,
+    Box<Map>? planBox,
+    Box<Map>? planTargetBox,
+    Box<Map>? reviewBox,
+    Box<Map>? contextBox,
     Clock? clock,
     IdGenerator? idGenerator,
   }) : _tradeBox = tradeBox ?? Hive.box(StorageBoxes.trades),
        _orderBox = orderBox ?? Hive.box(StorageBoxes.tradeOrders),
        _fillBox = fillBox ?? Hive.box(StorageBoxes.tradeFills),
+       _planBox = planBox ?? Hive.box(StorageBoxes.tradePlans),
+       _planTargetBox =
+           planTargetBox ?? Hive.box(StorageBoxes.tradePlanTargets),
+       _reviewBox = reviewBox ?? Hive.box(StorageBoxes.tradeReviews),
+       _contextBox = contextBox ?? Hive.box(StorageBoxes.tradeContexts),
        _clock = clock ?? const SystemClock(),
        _idGenerator = idGenerator ?? const TimestampIdGenerator();
 
   final Box<Map> _tradeBox;
   final Box<Map> _orderBox;
   final Box<Map> _fillBox;
+  final Box<Map> _planBox;
+  final Box<Map> _planTargetBox;
+  final Box<Map> _reviewBox;
+  final Box<Map> _contextBox;
   final Clock _clock;
   final IdGenerator _idGenerator;
 
@@ -119,8 +136,24 @@ class LocalTradeRepository implements TradeRepository {
   }
 
   @override
-  Future<void> upsertFill(TradeFillModel fill) =>
-      _fillBox.put(fill.id, fill.toMap());
+  Future<void> upsertFill(TradeFillModel fill) async {
+    final orderId = fill.orderId;
+    if (orderId != null && orderId.isNotEmpty) {
+      final order = await getOrderById(orderId);
+      if (order == null) {
+        throw ArgumentError.value(orderId, 'fill.orderId', 'Order not found');
+      }
+      if (order.tradeId != fill.tradeId) {
+        throw ArgumentError.value(
+          orderId,
+          'fill.orderId',
+          'Order belongs to another trade',
+        );
+      }
+    }
+
+    await _fillBox.put(fill.id, fill.toMap());
+  }
 
   @override
   Future<TradeOrderModel?> getOrderById(String orderId) async {
@@ -133,6 +166,50 @@ class LocalTradeRepository implements TradeRepository {
   }
 
   @override
+  Future<TradePlanModel?> getPlanById(String planId) async {
+    DataValidator.requireId(planId, 'planId');
+    final raw = _planBox.get(planId);
+    if (raw == null) return null;
+    return TradePlanModel.fromMap(toDbJson(raw));
+  }
+
+  @override
+  Future<TradePlanModel?> getLatestPlanByTrade(String tradeId) async {
+    DataValidator.requireId(tradeId, 'tradeId');
+    return _latestByTrade(
+      box: _planBox,
+      tradeId: tradeId,
+      fromMap: TradePlanModel.fromMap,
+      readTradeId: (item) => item.tradeId,
+      readCreatedAt: (item) => item.createdAt,
+    );
+  }
+
+  @override
+  Future<TradeReviewModel?> getLatestReviewByTrade(String tradeId) async {
+    DataValidator.requireId(tradeId, 'tradeId');
+    return _latestByTrade(
+      box: _reviewBox,
+      tradeId: tradeId,
+      fromMap: TradeReviewModel.fromMap,
+      readTradeId: (item) => item.tradeId,
+      readCreatedAt: (item) => item.createdAt,
+    );
+  }
+
+  @override
+  Future<TradeContextModel?> getLatestContextByTrade(String tradeId) async {
+    DataValidator.requireId(tradeId, 'tradeId');
+    return _latestByTrade(
+      box: _contextBox,
+      tradeId: tradeId,
+      fromMap: TradeContextModel.fromMap,
+      readTradeId: (item) => item.tradeId,
+      readCreatedAt: (item) => item.createdAt,
+    );
+  }
+
+  @override
   Future<List<TradeOrderModel>> listOrdersByTrade(String tradeId) async {
     DataValidator.requireId(tradeId, 'tradeId');
     final orders = _activeOrders
@@ -140,6 +217,19 @@ class LocalTradeRepository implements TradeRepository {
         .toList();
     orders.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return orders;
+  }
+
+  @override
+  Future<List<TradePlanTargetModel>> listPlanTargetsByPlan(
+    String tradePlanId,
+  ) async {
+    DataValidator.requireId(tradePlanId, 'tradePlanId');
+    final targets = _planTargetBox.values
+        .map((value) => TradePlanTargetModel.fromMap(toDbJson(value)))
+        .where((item) => item.tradePlanId == tradePlanId)
+        .toList(growable: false);
+    targets.sort((a, b) => a.targetOrder.compareTo(b.targetOrder));
+    return targets;
   }
 
   @override
@@ -174,6 +264,28 @@ class LocalTradeRepository implements TradeRepository {
       _orderBox.put(order.id, order.toMap());
 
   @override
+  Future<void> upsertPlan(TradePlanModel plan) =>
+      _planBox.put(plan.id, plan.toMap());
+
+  @override
+  Future<void> upsertPlanTarget(TradePlanTargetModel target) =>
+      _planTargetBox.put(target.id, target.toMap());
+
+  @override
+  Future<void> upsertReview(TradeReviewModel review) =>
+      _reviewBox.put(review.id, review.toMap());
+
+  @override
+  Future<void> upsertContext(TradeContextModel context) =>
+      _contextBox.put(context.id, context.toMap());
+
+  @override
+  Future<void> deletePlanTarget(String targetId) async {
+    DataValidator.requireId(targetId, 'targetId');
+    await _planTargetBox.delete(targetId);
+  }
+
+  @override
   Future<void> upsertTrade(TradeModel trade) {
     DataValidator.requireDateOrder(
       trade.openedAt,
@@ -198,5 +310,26 @@ class LocalTradeRepository implements TradeRepository {
               trade.status.toLowerCase() == 'open';
         })
         .toList(growable: false);
+  }
+
+  T? _latestByTrade<T>({
+    required Box<Map> box,
+    required String tradeId,
+    required T Function(Map<String, dynamic> map) fromMap,
+    required String Function(T item) readTradeId,
+    required DateTime Function(T item) readCreatedAt,
+  }) {
+    T? latest;
+    DateTime? latestCreatedAt;
+    for (final value in box.values) {
+      final mapped = fromMap(toDbJson(value));
+      if (readTradeId(mapped) != tradeId) continue;
+      final createdAt = readCreatedAt(mapped);
+      if (latestCreatedAt == null || createdAt.isAfter(latestCreatedAt)) {
+        latest = mapped;
+        latestCreatedAt = createdAt;
+      }
+    }
+    return latest;
   }
 }

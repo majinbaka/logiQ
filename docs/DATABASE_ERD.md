@@ -542,16 +542,16 @@ Pham vi doi chieu:
 
 - [x] Cac quan he cot loi da co du FK field trong model (account_id, instrument_id, strategy_version_id, ...).
 - [x] Hoan thien luong CRUD cho `TRADE_ORDER` (da co repository/contract su dung).
-- [ ] Hoan thien luong CRUD cho `TRADE_PLAN_TARGET` (hien chua co repository/contract su dung).
-- [ ] Bo sung write path ro rang cho `TRADE_PLAN` (hien chu yeu duoc doc boi analytics/insight).
-- [ ] Bo sung write path ro rang cho `TRADE_REVIEW` (hien chu yeu duoc doc boi analytics/insight).
-- [ ] Bo sung write path ro rang cho `TRADE_CONTEXT` (hien chu yeu duoc doc boi analytics/insight).
-- [ ] Them validate lien ket `TRADE_FILL.order_id -> TRADE_ORDER.id` khi co order flow.
+- [x] Hoan thien luong CRUD cho `TRADE_PLAN_TARGET` (da co repository/contract su dung).
+- [x] Bo sung write path ro rang cho `TRADE_PLAN` (da co `upsert/get latest` trong trade repository).
+- [x] Bo sung write path ro rang cho `TRADE_REVIEW` (da co `upsert/get latest` trong trade repository).
+- [x] Bo sung write path ro rang cho `TRADE_CONTEXT` (da co `upsert/get latest` trong trade repository).
+- [x] Them validate lien ket `TRADE_FILL.order_id -> TRADE_ORDER.id` khi co order flow.
 
 ### 3) Checklist field ERD co map nhung chua duoc dung trong luong nghiep vu chinh
 
-- [ ] `TRADE_ORDER.*` (toan bo field dang chua co luong su dung app).
-- [ ] `TRADE_PLAN_TARGET.*` (toan bo field dang chua co luong su dung app).
+- [ ] `TRADE_ORDER.*` (da co contract/repository, nhung chua co luong nghiep vu UI chinh).
+- [ ] `TRADE_PLAN_TARGET.*` (da co contract/repository, nhung chua co luong nghiep vu UI chinh).
 - [ ] `RISK_RULE.max_weekly_loss_amount`
 - [ ] `RISK_RULE.max_monthly_loss_amount`
 - [ ] `RISK_RULE.stop_trading_rule`
