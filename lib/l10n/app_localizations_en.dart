@@ -969,6 +969,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accountSettingsSubtitle => 'Create and update trading accounts used by other modules.';
 
   @override
+  String get accountSettingsLanguageSectionTitle => 'Language';
+
+  @override
+  String get accountSettingsLanguageSectionSubtitle => 'Choose app display language.';
+
+  @override
+  String get accountSettingsLanguageEnglish => 'English';
+
+  @override
+  String get accountSettingsLanguageVietnamese => 'Vietnamese';
+
+  @override
   String get accountSettingsLoadErrorTitle => 'Could not load accounts';
 
   @override

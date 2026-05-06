@@ -969,6 +969,18 @@ class AppLocalizationsVi extends AppLocalizations {
   String get accountSettingsSubtitle => 'Tạo và cập nhật tài khoản giao dịch dùng cho các module khác.';
 
   @override
+  String get accountSettingsLanguageSectionTitle => 'Ngôn ngữ';
+
+  @override
+  String get accountSettingsLanguageSectionSubtitle => 'Chọn ngôn ngữ hiển thị của ứng dụng.';
+
+  @override
+  String get accountSettingsLanguageEnglish => 'Tiếng Anh';
+
+  @override
+  String get accountSettingsLanguageVietnamese => 'Tiếng Việt';
+
+  @override
   String get accountSettingsLoadErrorTitle => 'Không thể tải tài khoản';
 
   @override

@@ -540,3 +540,9 @@ Cap nhat UI va validate de phan anh dung luong funding/trading:
     - `deposit`, `initial_deposit`, `dividend`, `adjustment` => cong tien.
     - `withdrawal`, `fee`, `tax` => tru tien.
 - Luong reserve/release/settle cash khi order pending/fill va realize proceeds khi close trade duoc giu nguyen.
+
+## 24. Account Language Switch (2026-05-06)
+
+- Bo sung bo chon ngon ngu ngay trong tab `Accounts`.
+- User co the chuyen doi truc tiep giua `English` va `Tieng Viet`.
+- App cap nhat locale ngay lap tuc sau khi chon.

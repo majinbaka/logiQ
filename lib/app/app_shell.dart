@@ -11,7 +11,14 @@ import 'package:logiq/core/seed/seed_fixtures.dart';
 import 'package:logiq/repositories/local/local_account_repository.dart';
 
 class AppShell extends StatefulWidget {
-  const AppShell({super.key});
+  const AppShell({
+    super.key,
+    this.locale,
+    this.onLocaleChanged,
+  });
+
+  final Locale? locale;
+  final ValueChanged<Locale>? onLocaleChanged;
 
   @override
   State<AppShell> createState() => _AppShellState();
@@ -107,6 +114,8 @@ class _AppShellState extends State<AppShell> {
         icon: Icons.manage_accounts_outlined,
         body: AccountSettingsView(
           selectedAccountId: _selectedAccountId,
+          locale: widget.locale,
+          onLocaleChanged: widget.onLocaleChanged,
           onSelectedAccountChanged: (accountId) {
             setState(() => _selectedAccountId = accountId);
           },

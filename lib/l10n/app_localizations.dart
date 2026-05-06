@@ -1967,6 +1967,30 @@ abstract class AppLocalizations {
   /// **'Create and update trading accounts used by other modules.'**
   String get accountSettingsSubtitle;
 
+  /// No description provided for @accountSettingsLanguageSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get accountSettingsLanguageSectionTitle;
+
+  /// No description provided for @accountSettingsLanguageSectionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose app display language.'**
+  String get accountSettingsLanguageSectionSubtitle;
+
+  /// No description provided for @accountSettingsLanguageEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get accountSettingsLanguageEnglish;
+
+  /// No description provided for @accountSettingsLanguageVietnamese.
+  ///
+  /// In en, this message translates to:
+  /// **'Vietnamese'**
+  String get accountSettingsLanguageVietnamese;
+
   /// No description provided for @accountSettingsLoadErrorTitle.
   ///
   /// In en, this message translates to:

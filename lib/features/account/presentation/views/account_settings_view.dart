@@ -16,12 +16,16 @@ class AccountSettingsView extends StatefulWidget {
     super.key,
     required this.selectedAccountId,
     required this.onSelectedAccountChanged,
+    this.locale,
+    this.onLocaleChanged,
     AccountRepository? accountRepository,
     this.masterDataSeeder,
   }) : _accountRepository = accountRepository;
 
   final String selectedAccountId;
   final ValueChanged<String> onSelectedAccountChanged;
+  final Locale? locale;
+  final ValueChanged<Locale>? onLocaleChanged;
   final AccountRepository? _accountRepository;
   final AccountMasterDataSeeder? masterDataSeeder;
 
@@ -164,6 +168,33 @@ class _AccountSettingsViewState extends State<AccountSettingsView> {
           TradingSectionHeader(
             title: l10n.accountSettingsTitle,
             subtitle: l10n.accountSettingsSubtitle,
+          ),
+          const SizedBox(height: TradingUiSpacing.md),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.language_outlined),
+              title: Text(l10n.accountSettingsLanguageSectionTitle),
+              subtitle: Text(l10n.accountSettingsLanguageSectionSubtitle),
+              trailing: DropdownButtonHideUnderline(
+                child: DropdownButton<Locale>(
+                  value: widget.locale ?? Localizations.localeOf(context),
+                  onChanged: (locale) {
+                    if (locale == null) return;
+                    widget.onLocaleChanged?.call(locale);
+                  },
+                  items: [
+                    DropdownMenuItem(
+                      value: const Locale('en'),
+                      child: Text(l10n.accountSettingsLanguageEnglish),
+                    ),
+                    DropdownMenuItem(
+                      value: const Locale('vi'),
+                      child: Text(l10n.accountSettingsLanguageVietnamese),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
           const SizedBox(height: TradingUiSpacing.md),
           Align(
