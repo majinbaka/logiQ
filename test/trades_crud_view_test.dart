@@ -108,15 +108,13 @@ void main() {
     });
 
     await tester.pumpWidget(const MainApp());
-    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle();
 
     expect(Hive.box<Map>(StorageBoxes.trades).length, 1);
 
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pump(const Duration(milliseconds: 300));
 
-    final openedAtField = find.byKey(const Key('trade_form_opened_at'));
-    await tester.enterText(openedAtField, '2026-04-01');
     await tester.enterText(find.byKey(const Key('trade_form_quantity')), '100');
     await tester.enterText(
       find.byKey(const Key('trade_form_entry_price')),
@@ -147,13 +145,11 @@ void main() {
     });
 
     await tester.pumpWidget(const MainApp());
-    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.byIcon(Icons.edit_outlined).first);
     await tester.pump(const Duration(milliseconds: 300));
 
-    final openedAtField = find.byKey(const Key('trade_form_opened_at'));
-    await tester.enterText(openedAtField, '2026-02-15');
     await tester.enterText(find.byKey(const Key('trade_form_quantity')), '50');
     await tester.enterText(
       find.byKey(const Key('trade_form_entry_price')),
@@ -181,7 +177,7 @@ void main() {
     });
 
     await tester.pumpWidget(const MainApp());
-    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.byIcon(Icons.delete_outline).first);
     await tester.pump(const Duration(seconds: 1));
@@ -205,7 +201,7 @@ void main() {
     });
 
     await tester.pumpWidget(const MainApp());
-    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pump(const Duration(milliseconds: 300));
