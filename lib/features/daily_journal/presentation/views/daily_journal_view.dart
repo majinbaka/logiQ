@@ -8,7 +8,9 @@ import 'package:logiq/l10n/app_localizations.dart';
 import 'package:logiq/repositories/local/local_daily_journal_repository.dart';
 
 class DailyJournalView extends StatefulWidget {
-  const DailyJournalView({super.key});
+  const DailyJournalView({super.key, required this.accountId});
+
+  final String accountId;
 
   @override
   State<DailyJournalView> createState() => _DailyJournalViewState();
@@ -20,7 +22,10 @@ class _DailyJournalViewState extends State<DailyJournalView> {
   @override
   void initState() {
     super.initState();
-    _viewModel = DailyJournalViewModel(repository: LocalDailyJournalRepository());
+    _viewModel = DailyJournalViewModel(
+      repository: LocalDailyJournalRepository(),
+      accountId: widget.accountId,
+    );
     _viewModel.loadJournals();
   }
 

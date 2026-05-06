@@ -10,7 +10,7 @@ class StrategyRiskViewModel extends ChangeNotifier {
   StrategyRiskViewModel({
     required StrategyRepository strategyRepository,
     required RiskRepository riskRepository,
-    this.defaultAccountId = 'acc_1',
+    required this.defaultAccountId,
   }) : _strategyRepository = strategyRepository,
        _riskRepository = riskRepository;
 

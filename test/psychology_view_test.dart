@@ -55,7 +55,7 @@ void main() {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: AppLocalizations.supportedLocales,
-        home: Scaffold(body: PsychologyView()),
+        home: Scaffold(body: PsychologyView(accountId: 'acc_1')),
       ),
     );
     await tester.pump();

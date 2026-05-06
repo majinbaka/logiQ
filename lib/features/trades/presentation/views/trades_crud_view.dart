@@ -23,7 +23,7 @@ import 'package:logiq/repositories/local/local_trade_repository.dart';
 class TradesCrudView extends StatefulWidget {
   const TradesCrudView({
     super.key,
-    this.defaultAccountId = 'acc_1',
+    required this.defaultAccountId,
     TradesCrudViewModel? viewModel,
   })
     : _viewModel = viewModel;

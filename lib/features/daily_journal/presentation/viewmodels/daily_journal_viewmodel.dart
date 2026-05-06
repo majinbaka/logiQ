@@ -7,7 +7,7 @@ class DailyJournalViewModel extends ChangeNotifier {
   DailyJournalViewModel({
     required DailyJournalRepository repository,
     IdGenerator idGenerator = const TimestampIdGenerator(),
-    this.accountId = 'acc_1',
+    required this.accountId,
   }) : _repository = repository,
        _idGenerator = idGenerator;
 

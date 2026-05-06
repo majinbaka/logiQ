@@ -11,7 +11,7 @@ class PortfolioCrudViewModel extends ChangeNotifier {
   PortfolioCrudViewModel({
     required PortfolioRepository repository,
     AccountRepository? accountRepository,
-    this.accountId = 'acc_1',
+    required this.accountId,
   }) : _repository = repository,
        _accountRepository = accountRepository;
 

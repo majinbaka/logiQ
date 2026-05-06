@@ -32,7 +32,7 @@ void main() {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      home: InsightsView(),
+      home: InsightsView(accountId: 'acc_1'),
     );
   }
 

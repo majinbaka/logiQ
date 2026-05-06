@@ -14,7 +14,9 @@ import 'package:logiq/repositories/local/local_psychology_repository.dart';
 import 'package:logiq/repositories/local/local_trade_repository.dart';
 
 class PsychologyView extends StatefulWidget {
-  const PsychologyView({super.key});
+  const PsychologyView({super.key, required this.accountId});
+
+  final String accountId;
 
   @override
   State<PsychologyView> createState() => _PsychologyViewState();
@@ -27,8 +29,6 @@ class _PsychologyViewState extends State<PsychologyView> {
   final LocalTradeRepository _tradeRepository = LocalTradeRepository();
   final LocalDailyJournalRepository _journalRepository =
       LocalDailyJournalRepository();
-
-  final String _defaultAccountId = 'acc_1';
 
   List<TradeModel> _trades = const [];
   List<DailyJournalModel> _journals = const [];
@@ -269,11 +269,13 @@ class _PsychologyViewState extends State<PsychologyView> {
       final start = DateTime.utc(now.year - 1, now.month, now.day);
 
       final trades = await _tradeRepository.listByAccountAndDateRange(
-        _defaultAccountId,
+        widget.accountId,
         start,
         now,
       );
-      final journals = await _journalRepository.listDailyJournals(_defaultAccountId);
+      final journals = await _journalRepository.listDailyJournals(
+        widget.accountId,
+      );
       final tags = await _psychologyRepository.listBehaviorTags();
 
       final logs = <EmotionLogModel>[];

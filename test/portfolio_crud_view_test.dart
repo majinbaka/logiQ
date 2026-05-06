@@ -87,6 +87,7 @@ Future<void> _pumpPortfolio(
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       home: PortfolioCrudView(
+        defaultAccountId: 'acc_1',
         repository: repository,
         accountRepository: _FakeAccountRepository(),
         instrumentRepository: _FakeInstrumentRepository(),

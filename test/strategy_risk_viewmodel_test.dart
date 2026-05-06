@@ -21,6 +21,7 @@ void main() {
     viewModel = StrategyRiskViewModel(
       strategyRepository: LocalStrategyRepository(),
       riskRepository: LocalRiskRepository(),
+      defaultAccountId: 'acc_1',
     );
 
     // Keep this test deterministic by clearing seeded strategy data.

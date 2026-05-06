@@ -9,7 +9,9 @@ import 'package:logiq/repositories/local/local_risk_repository.dart';
 import 'package:logiq/repositories/local/local_strategy_repository.dart';
 
 class StrategyRiskView extends StatefulWidget {
-  const StrategyRiskView({super.key});
+  const StrategyRiskView({super.key, required this.defaultAccountId});
+
+  final String defaultAccountId;
 
   @override
   State<StrategyRiskView> createState() => _StrategyRiskViewState();
@@ -24,6 +26,7 @@ class _StrategyRiskViewState extends State<StrategyRiskView> {
     _viewModel = StrategyRiskViewModel(
       strategyRepository: LocalStrategyRepository(),
       riskRepository: LocalRiskRepository(),
+      defaultAccountId: widget.defaultAccountId,
     );
     _viewModel.load();
   }

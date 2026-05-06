@@ -9,7 +9,7 @@ import 'package:logiq/repositories/contracts/portfolio_repository.dart';
 void main() {
   test('create, update and delete via portfolio crud viewmodel', () async {
     final repo = _FakePortfolioRepository();
-    final vm = PortfolioCrudViewModel(repository: repo);
+    final vm = PortfolioCrudViewModel(repository: repo, accountId: 'acc_1');
 
     await vm.createSnapshot(
       snapshotDate: DateTime.utc(2026, 5, 1),
@@ -29,7 +29,7 @@ void main() {
 
   test('add cash movement uses unique ids for same day entries', () async {
     final repo = _FakePortfolioRepository();
-    final vm = PortfolioCrudViewModel(repository: repo);
+    final vm = PortfolioCrudViewModel(repository: repo, accountId: 'acc_1');
 
     await vm.addOrUpdateCashMovement(
       movementDate: DateTime.utc(2026, 5, 1),
@@ -48,7 +48,7 @@ void main() {
 
   test('add cash movement rejects unsupported movement type', () async {
     final repo = _FakePortfolioRepository();
-    final vm = PortfolioCrudViewModel(repository: repo);
+    final vm = PortfolioCrudViewModel(repository: repo, accountId: 'acc_1');
 
     expect(
       () => vm.addOrUpdateCashMovement(

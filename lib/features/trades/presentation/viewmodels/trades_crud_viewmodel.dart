@@ -37,7 +37,7 @@ class TradesCrudViewModel extends ChangeNotifier {
     required RiskRepository riskRepository,
     required StrategyRepository strategyRepository,
     AnalyticsRebuildService? analyticsRebuildService,
-    this.defaultAccountId = 'acc_1',
+    required this.defaultAccountId,
   }) : _repository = repository,
        _accountRepository = accountRepository,
        _instrumentRepository = instrumentRepository,

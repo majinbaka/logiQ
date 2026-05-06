@@ -28,6 +28,7 @@ void main() {
       instrumentRepository: _FakeInstrumentRepository(),
       riskRepository: _FakeRiskRepository(),
       strategyRepository: _FakeStrategyRepository(),
+      defaultAccountId: 'acc_1',
     );
 
     await vm.createTrade(
@@ -65,6 +66,7 @@ void main() {
       instrumentRepository: _FakeInstrumentRepository(),
       riskRepository: _FakeRiskRepository(),
       strategyRepository: _FakeStrategyRepository(),
+      defaultAccountId: 'acc_1',
     );
 
     await vm.createTrade(

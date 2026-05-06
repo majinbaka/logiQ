@@ -13,7 +13,9 @@ import 'package:logiq/repositories/local/local_insight_repository.dart';
 import 'package:logiq/repositories/local/local_repository_utils.dart';
 
 class InsightsView extends StatefulWidget {
-  const InsightsView({super.key});
+  const InsightsView({super.key, required this.accountId});
+
+  final String accountId;
 
   @override
   State<InsightsView> createState() => _InsightsViewState();
@@ -24,8 +26,6 @@ class _InsightsViewState extends State<InsightsView> {
   final Box<Map> _tradeFactBox = Hive.box(StorageBoxes.analyticsTradeFacts);
   final Box<Map> _tradeTagBox = Hive.box(StorageBoxes.tradeTags);
   final Box<Map> _tagBox = Hive.box(StorageBoxes.tags);
-
-  static const String _defaultAccountId = 'acc_1';
 
   bool _isLoading = false;
   String? _error;
@@ -317,7 +317,13 @@ class _InsightsViewState extends State<InsightsView> {
   }
 
   String _resolveAccountId(List<AnalyticsTradeFactModel> allFacts) {
-    if (allFacts.isEmpty) return _defaultAccountId;
+    if (allFacts.isEmpty) return widget.accountId;
+    final matched = allFacts
+        .where((item) => item.accountId == widget.accountId)
+        .toList(growable: false);
+    if (matched.isNotEmpty) {
+      return widget.accountId;
+    }
     allFacts.sort((a, b) {
       final left = a.closedDate ?? a.openedDate ?? DateTime.fromMillisecondsSinceEpoch(0);
       final right = b.closedDate ?? b.openedDate ?? DateTime.fromMillisecondsSinceEpoch(0);

@@ -7,6 +7,8 @@ import 'package:logiq/features/psychology/presentation/views/psychology_view.dar
 import 'package:logiq/features/strategy/presentation/views/strategy_risk_view.dart';
 import 'package:logiq/features/trades/presentation/views/trades_crud_view.dart';
 import 'package:logiq/l10n/app_localizations.dart';
+import 'package:logiq/core/seed/seed_fixtures.dart';
+import 'package:logiq/repositories/local/local_account_repository.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
@@ -17,7 +19,21 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> {
   int _currentIndex = 0;
-  String _selectedAccountId = 'acc_1';
+  final _accountRepository = LocalAccountRepository();
+  String _selectedAccountId = '';
+  String get _fallbackAccountId => SeedFixtures.account().id;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadInitialAccount();
+  }
+
+  Future<void> _loadInitialAccount() async {
+    final accounts = await _accountRepository.listActive();
+    if (!mounted || accounts.isEmpty) return;
+    setState(() => _selectedAccountId = accounts.first.id);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +44,9 @@ class _AppShellState extends State<AppShell> {
         icon: Icons.candlestick_chart,
         body: TradesCrudView(
           key: ValueKey<String>('trades_$_selectedAccountId'),
-          defaultAccountId: _selectedAccountId,
+          defaultAccountId: _selectedAccountId.isEmpty
+              ? _fallbackAccountId
+              : _selectedAccountId,
         ),
       ),
       _ShellTab(
@@ -36,28 +54,50 @@ class _AppShellState extends State<AppShell> {
         icon: Icons.pie_chart_outline,
         body: PortfolioCrudView(
           key: ValueKey<String>('portfolio_$_selectedAccountId'),
-          defaultAccountId: _selectedAccountId,
+          defaultAccountId: _selectedAccountId.isEmpty
+              ? _fallbackAccountId
+              : _selectedAccountId,
         ),
       ),
       _ShellTab(
         label: l10n.navStrategy,
         icon: Icons.rule_folder_outlined,
-        body: const StrategyRiskView(),
+        body: StrategyRiskView(
+          key: ValueKey<String>('strategy_$_selectedAccountId'),
+          defaultAccountId: _selectedAccountId.isEmpty
+              ? _fallbackAccountId
+              : _selectedAccountId,
+        ),
       ),
       _ShellTab(
         label: l10n.navJournal,
         icon: Icons.menu_book_outlined,
-        body: const DailyJournalView(),
+        body: DailyJournalView(
+          key: ValueKey<String>('journal_$_selectedAccountId'),
+          accountId: _selectedAccountId.isEmpty
+              ? _fallbackAccountId
+              : _selectedAccountId,
+        ),
       ),
       _ShellTab(
         label: l10n.navPsychology,
         icon: Icons.psychology_alt_outlined,
-        body: const PsychologyView(),
+        body: PsychologyView(
+          key: ValueKey<String>('psychology_$_selectedAccountId'),
+          accountId: _selectedAccountId.isEmpty
+              ? _fallbackAccountId
+              : _selectedAccountId,
+        ),
       ),
       _ShellTab(
         label: l10n.navInsights,
         icon: Icons.insights_outlined,
-        body: const InsightsView(),
+        body: InsightsView(
+          key: ValueKey<String>('insights_$_selectedAccountId'),
+          accountId: _selectedAccountId.isEmpty
+              ? _fallbackAccountId
+              : _selectedAccountId,
+        ),
       ),
       _ShellTab(
         label: l10n.navAccountSettings,
