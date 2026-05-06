@@ -24,8 +24,8 @@ Muc tieu thiet ke:
 - Cac cot boolean trong `TRADE_BEHAVIOR` kho mo rong. Nen dung bang `TAG` va
   `TRADE_TAG` de them hanh vi/sai lam/setup moi ma khong can sua schema.
 - Danh muc can phan biet tien nap/rut voi PnL giao dich. Neu khong co
-  `CASH_MOVEMENT`, dashboard loi nhuan va drawdown se sai khi nguoi dung nap
-  them tien.
+  ledger tien va balance hien tai, dashboard loi nhuan, drawdown va buying
+  power se sai hoac kho audit.
 - Insight va dashboard nen la du lieu dan xuat/materialized view. Nguon su
   that phai nam o order/fill, plan, review, risk check va portfolio snapshot.
 
@@ -286,16 +286,28 @@ erDiagram
         decimal weight_percent
     }
 
-    CASH_MOVEMENT {
+    ACCOUNT_BALANCE {
         string id PK
         string account_id FK
-        date movement_date
+        string currency
+        decimal current_cash_balance
+        decimal available_cash
+        decimal reserved_cash
+        decimal buying_power
+        datetime updated_at
+    }
+
+    CASH_LEDGER {
+        string id PK
+        string account_id FK
         string movement_type
         decimal amount
-        string currency
-        string note
+        decimal balance_before
+        decimal balance_after
+        string reference_type
+        string reference_id
+        string status
         datetime created_at
-        datetime updated_at
     }
 
     PRICE_QUOTE {
@@ -424,7 +436,8 @@ erDiagram
     TRADING_ACCOUNT ||--o{ PORTFOLIO_SNAPSHOT : snapshots
     PORTFOLIO_SNAPSHOT ||--o{ POSITION_SNAPSHOT : contains
     INSTRUMENT ||--o{ POSITION_SNAPSHOT : valued_as
-    TRADING_ACCOUNT ||--o{ CASH_MOVEMENT : records
+    TRADING_ACCOUNT ||--o{ ACCOUNT_BALANCE : maintains
+    TRADING_ACCOUNT ||--o{ CASH_LEDGER : records
     INSTRUMENT ||--o{ PRICE_QUOTE : quoted_as
     TRADING_ACCOUNT ||--o{ DAILY_JOURNAL : journals
     INSTRUMENT ||--o{ INSTRUMENT_NOTE : documents
@@ -449,7 +462,8 @@ erDiagram
 | `TAG` / `TRADE_TAG` | Mot nhan phan loai | Ho tro setup, sai lam, hanh vi, thi truong, custom tag. |
 | `PORTFOLIO_SNAPSHOT` | Mot snapshot tai khoan theo ngay | Nguon cho equity curve va drawdown. |
 | `POSITION_SNAPSHOT` | Mot vi the trong snapshot | Nguon cho ty trong va unrealized PnL. |
-| `CASH_MOVEMENT` | Mot dong tien nap/rut/dieu chinh | Can de tach PnL voi tien nap rut. |
+| `ACCOUNT_BALANCE` | So du tien hien tai theo account/currency | Luu current cash, available cash, reserved cash va buying power. |
+| `CASH_LEDGER` | Mot but toan tien theo thu tu thoi gian | Audit duoc balance_before/after, lien ket tham chieu va trang thai pending/completed. |
 | `ANALYTICS_*` | Cache phuc vu dashboard | Co the xoa va tinh lai tu bang nguon. |
 
 ## Mapping Theo Feature
@@ -457,7 +471,7 @@ erDiagram
 | Feature | Bang chinh |
 | --- | --- |
 | Nhat ky giao dich | `TRADE`, `TRADE_ORDER`, `TRADE_FILL`, `TRADE_PLAN`, `TRADE_REVIEW` |
-| Theo doi danh muc | `TRADING_ACCOUNT`, `PORTFOLIO_SNAPSHOT`, `POSITION_SNAPSHOT`, `CASH_MOVEMENT`, `PRICE_QUOTE` |
+| Theo doi danh muc | `TRADING_ACCOUNT`, `ACCOUNT_BALANCE`, `CASH_LEDGER`, `PORTFOLIO_SNAPSHOT`, `POSITION_SNAPSHOT`, `PRICE_QUOTE` |
 | Nhat ky hang ngay | `DAILY_JOURNAL`, `EMOTION_LOG` |
 | Tam ly giao dich | `EMOTION_LOG`, `TAG`, `TRADE_TAG`, `TRADE_REVIEW` |
 | Phan tich va thong ke | `ANALYTICS_TRADE_FACT`, `ANALYTICS_DAILY_ACCOUNT_FACT`, hoac query truc tiep tu bang nguon |
@@ -501,6 +515,8 @@ Neu dung Hive truoc, van giu cung logical model:
 - Moi bang co the la mot box rieng hoac gom theo feature khi du lieu con nho.
 - Quan he luu bang id, khong luu object long nhau qua sau de tranh migration kho.
 - `ANALYTICS_*` nen la cache co the rebuild, khong phai nguon su that.
+- `CASH_MOVEMENT` co the giu tam thoi de compatibility migration, nhung nguon
+  su that cho dong tien nen chuyen sang `CASH_LEDGER`.
 
 ## Ghi Chu Trien Khai
 
@@ -516,8 +532,10 @@ Neu dung Hive truoc, van giu cung logical model:
   tich.
 - `RISK_RULE` co `effective_from` va `effective_to` de trade cu van duoc danh
   gia theo rule dang ap dung luc do.
-- `CASH_MOVEMENT` phai duoc tinh vao dashboard loi nhuan de tranh nham nap them
-  tien la loi nhuan.
+- `ACCOUNT_BALANCE.available_cash` va `reserved_cash` la dau vao bat buoc de
+  check buying power truoc khi dat lenh.
+- `CASH_LEDGER` phai luu `status` (`pending`, `completed`, `rejected`) de
+  khong cong tien sai khi dong tien chua settle.
 - `TAG` nen co tag he thong ban dau cho mistake, behavior va setup pho bien;
   nguoi dung co the them tag custom sau.
 - Notes, lessons va journal la du lieu rieng tu. Khi co export/sync/backup,
