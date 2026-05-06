@@ -102,6 +102,7 @@ class _DailyJournalViewState extends State<DailyJournalView> {
       isScrollControlled: true,
       builder: (context) {
         final l10n = AppLocalizations.of(context)!;
+        final formKey = GlobalKey<FormState>();
         return StatefulBuilder(
           builder: (context, setModalState) {
             return SingleChildScrollView(
@@ -112,10 +113,12 @@ class _DailyJournalViewState extends State<DailyJournalView> {
                 bottom:
                     MediaQuery.of(context).viewInsets.bottom + TradingUiSpacing.md,
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                   Text(
                     existing == null
                         ? l10n.dailyJournalCreateTitle
@@ -123,12 +126,21 @@ class _DailyJournalViewState extends State<DailyJournalView> {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: TradingUiSpacing.md),
-                  TextField(
+                  TextFormField(
                     controller: dateController,
+                    readOnly: true,
+                    onTap: () => _pickDateIntoController(context, dateController),
                     decoration: InputDecoration(
                       labelText: l10n.dailyJournalDateLabel,
                       hintText: l10n.dateFormatHint,
+                      suffixIcon: const Icon(Icons.calendar_today_outlined),
                     ),
+                    validator: (value) {
+                      if (DateTime.tryParse((value ?? '').trim()) == null) {
+                        return l10n.portfolioDateValidationError;
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: TradingUiSpacing.md),
                   Text(
@@ -136,21 +148,23 @@ class _DailyJournalViewState extends State<DailyJournalView> {
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
                   const SizedBox(height: TradingUiSpacing.sm),
-                  TextField(
+                  TextFormField(
                     controller: marketViewController,
                     decoration: InputDecoration(
                       labelText: l10n.dailyJournalMarketViewLabel,
                     ),
+                    validator: _requiredValidator,
                   ),
                   const SizedBox(height: TradingUiSpacing.sm),
-                  TextField(
+                  TextFormField(
                     controller: tradingPlanController,
                     decoration: InputDecoration(
                       labelText: l10n.dailyJournalTradingPlanLabel,
                     ),
+                    validator: _requiredValidator,
                   ),
                   const SizedBox(height: TradingUiSpacing.sm),
-                  TextField(
+                  TextFormField(
                     controller: watchlistController,
                     decoration: InputDecoration(
                       labelText: l10n.dailyJournalWatchlistLabel,
@@ -162,11 +176,12 @@ class _DailyJournalViewState extends State<DailyJournalView> {
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
                   const SizedBox(height: TradingUiSpacing.sm),
-                  TextField(
+                  TextFormField(
                     controller: completedActionsController,
                     decoration: InputDecoration(
                       labelText: l10n.dailyJournalCompletedActionsLabel,
                     ),
+                    validator: _requiredValidator,
                   ),
                   const SizedBox(height: TradingUiSpacing.sm),
                   SwitchListTile(
@@ -176,19 +191,21 @@ class _DailyJournalViewState extends State<DailyJournalView> {
                     title: Text(l10n.dailyJournalFollowedPlanLabel),
                   ),
                   const SizedBox(height: TradingUiSpacing.sm),
-                  TextField(
+                  TextFormField(
                     controller: winsController,
                     decoration: InputDecoration(labelText: l10n.dailyJournalWinsLabel),
+                    validator: _requiredValidator,
                   ),
                   const SizedBox(height: TradingUiSpacing.sm),
-                  TextField(
+                  TextFormField(
                     controller: mistakesController,
                     decoration: InputDecoration(
                       labelText: l10n.dailyJournalMistakesLabel,
                     ),
+                    validator: _requiredValidator,
                   ),
                   const SizedBox(height: TradingUiSpacing.sm),
-                  TextField(
+                  TextFormField(
                     controller: freeNoteController,
                     maxLines: 3,
                     decoration: InputDecoration(labelText: l10n.dailyJournalFreeNoteLabel),
@@ -215,13 +232,19 @@ class _DailyJournalViewState extends State<DailyJournalView> {
                       const SizedBox(width: TradingUiSpacing.sm),
                       Expanded(
                         child: FilledButton(
-                          onPressed: () => Navigator.pop(context, true),
+                          onPressed: () {
+                            if (formKey.currentState?.validate() != true) {
+                              return;
+                            }
+                            Navigator.pop(context, true);
+                          },
                           child: Text(l10n.dailyJournalSave),
                         ),
                       ),
                     ],
                   ),
                 ],
+                ),
               ),
             );
           },
@@ -317,6 +340,28 @@ class _DailyJournalViewState extends State<DailyJournalView> {
     final month = utc.month.toString().padLeft(2, '0');
     final day = utc.day.toString().padLeft(2, '0');
     return '${utc.year}-$month-$day';
+  }
+
+  String? _requiredValidator(String? value) {
+    if ((value ?? '').trim().isEmpty) {
+      return AppLocalizations.of(context)!.tradesRequiredFieldValidationError;
+    }
+    return null;
+  }
+
+  Future<void> _pickDateIntoController(
+    BuildContext context,
+    TextEditingController controller,
+  ) async {
+    final initial = DateTime.tryParse(controller.text.trim()) ?? DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initial,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+    if (picked == null) return;
+    controller.text = _formatDateInput(picked);
   }
 }
 

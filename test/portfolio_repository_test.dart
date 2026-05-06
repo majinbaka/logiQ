@@ -151,4 +151,156 @@ void main() {
     expect(snapshots.length, 1);
     expect(snapshots.first.note, 'second');
   });
+
+  test('quote entered with instrument symbol is applied to holdings', () async {
+    await Hive.box<Map>(StorageBoxes.instruments).put('ins_fpt', {
+      'id': 'ins_fpt',
+      'symbol': 'FPT',
+      'asset_class': 'stock',
+      'currency': 'VND',
+      'created_at': DateTime.utc(2026, 5, 1).toIso8601String(),
+    });
+
+    final trade = TradeModel(
+      id: 't_symbol',
+      accountId: 'acc_1',
+      instrumentId: 'ins_fpt',
+      direction: 'buy',
+      status: 'open',
+      createdAt: DateTime.utc(2026, 5, 1),
+      openedAt: DateTime.utc(2026, 5, 1),
+    );
+    await Hive.box<Map>(StorageBoxes.trades).put(trade.id, trade.toMap());
+    await Hive.box<Map>(StorageBoxes.tradeFills).put(
+      'f_symbol',
+      TradeFillModel(
+        id: 'f_symbol',
+        tradeId: trade.id,
+        executedAt: DateTime.utc(2026, 5, 1, 9),
+        price: '100',
+        quantity: '10',
+        source: 'buy',
+        createdAt: DateTime.utc(2026, 5, 1, 9),
+      ).toMap(),
+    );
+    await repository.upsertPriceQuote(
+      PriceQuoteModel(
+        id: 'q_symbol',
+        instrumentId: 'FPT',
+        quotedAt: DateTime.utc(2026, 5, 1, 16),
+        price: '120',
+        createdAt: DateTime.utc(2026, 5, 1, 16),
+      ),
+    );
+
+    final holdings = await repository.buildHoldings(
+      'acc_1',
+      DateTime.utc(2026, 5, 1, 23, 59),
+    );
+    expect(holdings.length, 1);
+    expect(holdings.first.instrumentId, 'ins_fpt');
+    expect(holdings.first.marketPrice, '120');
+  });
+
+  test('holdings fallback to trade header when fill is missing', () async {
+    final trade = TradeModel(
+      id: 't_no_fill',
+      accountId: 'acc_1',
+      instrumentId: 'ins_vnm',
+      direction: 'buy',
+      status: 'open',
+      createdAt: DateTime.utc(2026, 5, 1),
+      openedAt: DateTime.utc(2026, 5, 1),
+      quantityOpened: '50',
+      avgEntryPrice: '100',
+    );
+    await Hive.box<Map>(StorageBoxes.trades).put(trade.id, trade.toMap());
+    await repository.upsertPriceQuote(
+      PriceQuoteModel(
+        id: 'q_no_fill',
+        instrumentId: 'VNM',
+        quotedAt: DateTime.utc(2026, 5, 1, 16),
+        price: '120',
+        createdAt: DateTime.utc(2026, 5, 1, 16),
+      ),
+    );
+
+    final holdings = await repository.buildHoldings(
+      'acc_1',
+      DateTime.utc(2026, 5, 1, 23, 59),
+    );
+    expect(holdings.length, 1);
+    expect(holdings.first.instrumentId, 'ins_vnm');
+    expect(holdings.first.quantity, '50');
+    expect(holdings.first.averageCost, '100');
+    expect(holdings.first.marketPrice, '120');
+  });
+
+  test('sell header without fill reduces holding and updates cash flow', () async {
+    await repository.upsertCashMovement(
+      CashMovementModel(
+        id: 'cm_header',
+        accountId: 'acc_1',
+        movementDate: DateTime.utc(2026, 5, 1),
+        movementType: 'deposit',
+        amount: '1000',
+        currency: 'USD',
+        createdAt: DateTime.utc(2026, 5, 1),
+      ),
+    );
+
+    await Hive.box<Map>(StorageBoxes.trades).put(
+      't_buy_header',
+      TradeModel(
+        id: 't_buy_header',
+        accountId: 'acc_1',
+        instrumentId: 'AAPL',
+        direction: 'buy',
+        status: 'open',
+        createdAt: DateTime.utc(2026, 5, 1),
+        openedAt: DateTime.utc(2026, 5, 1),
+        quantityOpened: '10',
+        avgEntryPrice: '100',
+      ).toMap(),
+    );
+    await Hive.box<Map>(StorageBoxes.trades).put(
+      't_sell_header',
+      TradeModel(
+        id: 't_sell_header',
+        accountId: 'acc_1',
+        instrumentId: 'AAPL',
+        direction: 'sell',
+        status: 'closed',
+        createdAt: DateTime.utc(2026, 5, 2),
+        openedAt: DateTime.utc(2026, 5, 2),
+        quantityOpened: '4',
+        avgEntryPrice: '120',
+      ).toMap(),
+    );
+
+    await repository.upsertPriceQuote(
+      PriceQuoteModel(
+        id: 'q_header',
+        instrumentId: 'AAPL',
+        quotedAt: DateTime.utc(2026, 5, 2, 16),
+        price: '120',
+        createdAt: DateTime.utc(2026, 5, 2, 16),
+      ),
+    );
+
+    final holdings = await repository.buildHoldings(
+      'acc_1',
+      DateTime.utc(2026, 5, 2, 23, 59),
+    );
+    expect(holdings.length, 1);
+    expect(holdings.first.quantity, '6');
+
+    final snapshot = await repository.generateSnapshot(
+      accountId: 'acc_1',
+      snapshotDate: DateTime.utc(2026, 5, 2),
+    );
+    expect(snapshot.snapshot.cashBalance, '480');
+    expect(snapshot.snapshot.positionsMarketValue, '720');
+    expect(snapshot.snapshot.totalEquity, '1200');
+  });
 }

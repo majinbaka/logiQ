@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:trading_diary/core/database/models/cash_movement_model.dart';
+import 'package:trading_diary/core/database/models/instrument_model.dart';
 import 'package:trading_diary/core/database/models/position_snapshot_model.dart';
 import 'package:trading_diary/core/database/models/portfolio_snapshot_model.dart';
 import 'package:trading_diary/core/database/models/price_quote_model.dart';
+import 'package:trading_diary/core/database/models/trading_account_model.dart';
 import 'package:trading_diary/features/portfolio/presentation/views/portfolio_crud_view.dart';
 import 'package:trading_diary/l10n/app_localizations.dart';
+import 'package:trading_diary/repositories/contracts/account_repository.dart';
+import 'package:trading_diary/repositories/contracts/instrument_repository.dart';
 import 'package:trading_diary/repositories/contracts/portfolio_repository.dart';
 
 void main() {
@@ -27,6 +31,10 @@ void main() {
   testWidgets('portfolio supports create, edit, delete snapshot flow', (
     tester,
   ) async {
+    tester.view.physicalSize = const Size(1400, 2200);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
     final repo = _FakePortfolioRepository();
     await _pumpPortfolio(tester, repo);
 
@@ -40,6 +48,11 @@ void main() {
 
     expect(find.textContaining('first'), findsOneWidget);
 
+    await tester.scrollUntilVisible(
+      find.byIcon(Icons.edit_outlined).first,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.byIcon(Icons.edit_outlined).first);
     await tester.pumpAndSettle();
     await tester.enterText(find.byKey(const Key('portfolio_form_note')), 'updated');
@@ -48,6 +61,11 @@ void main() {
 
     expect(find.textContaining('updated'), findsOneWidget);
 
+    await tester.scrollUntilVisible(
+      find.byIcon(Icons.delete_outline).first,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.byIcon(Icons.delete_outline).first);
     await tester.pumpAndSettle();
 
@@ -68,10 +86,46 @@ Future<void> _pumpPortfolio(
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      home: PortfolioCrudView(repository: repository),
+      home: PortfolioCrudView(
+        repository: repository,
+        accountRepository: _FakeAccountRepository(),
+        instrumentRepository: _FakeInstrumentRepository(),
+      ),
     ),
   );
   await tester.pumpAndSettle();
+}
+
+class _FakeAccountRepository implements AccountRepository {
+  @override
+  Future<TradingAccountModel?> getById(String accountId) async => null;
+
+  @override
+  Future<List<TradingAccountModel>> listActive() async {
+    return [
+      TradingAccountModel(
+        id: 'acc_1',
+        name: 'Primary',
+        baseCurrency: 'USD',
+        status: 'active',
+        createdAt: DateTime.utc(2026, 5, 1),
+      ),
+    ];
+  }
+
+  @override
+  Future<void> upsert(TradingAccountModel account) async {}
+}
+
+class _FakeInstrumentRepository implements InstrumentRepository {
+  @override
+  Future<InstrumentModel?> getById(String instrumentId) async => null;
+
+  @override
+  Future<List<InstrumentModel>> listActive() async => const [];
+
+  @override
+  Future<void> upsert(InstrumentModel instrument) async {}
 }
 
 class _FakePortfolioRepository implements PortfolioRepository {
@@ -84,6 +138,12 @@ class _FakePortfolioRepository implements PortfolioRepository {
   Future<List<PortfolioHolding>> buildHoldings(String accountId, DateTime asOf) async {
     return const [];
   }
+
+  @override
+  Future<void> deleteCashMovement(String movementId) async {}
+
+  @override
+  Future<void> deletePriceQuote(String quoteId) async {}
 
   @override
   Future<void> deleteSnapshot(String snapshotId) async {
@@ -126,6 +186,19 @@ class _FakePortfolioRepository implements PortfolioRepository {
 
   @override
   Future<List<PositionSnapshotModel>> listPositionSnapshots(String snapshotId) async {
+    return const [];
+  }
+
+  @override
+  Future<List<CashMovementModel>> listCashMovements(
+    String accountId, {
+    int limit = 20,
+  }) async {
+    return const [];
+  }
+
+  @override
+  Future<List<PriceQuoteModel>> listPriceQuotes({int limit = 20}) async {
     return const [];
   }
 

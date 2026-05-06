@@ -26,14 +26,59 @@ void main() {
     await vm.deleteSnapshot(vm.snapshots.first);
     expect(vm.snapshots, isEmpty);
   });
+
+  test('add cash movement uses unique ids for same day entries', () async {
+    final repo = _FakePortfolioRepository();
+    final vm = PortfolioCrudViewModel(repository: repo);
+
+    await vm.addOrUpdateCashMovement(
+      movementDate: DateTime.utc(2026, 5, 1),
+      movementType: 'deposit',
+      amount: '100',
+    );
+    await vm.addOrUpdateCashMovement(
+      movementDate: DateTime.utc(2026, 5, 1),
+      movementType: 'deposit',
+      amount: '200',
+    );
+
+    expect(repo.cashMovements.length, 2);
+    expect(repo.cashMovements.first.id, isNot(repo.cashMovements.last.id));
+  });
+
+  test('add cash movement rejects unsupported movement type', () async {
+    final repo = _FakePortfolioRepository();
+    final vm = PortfolioCrudViewModel(repository: repo);
+
+    expect(
+      () => vm.addOrUpdateCashMovement(
+        movementDate: DateTime.utc(2026, 5, 1),
+        movementType: 'unknown',
+        amount: '100',
+      ),
+      throwsArgumentError,
+    );
+  });
 }
 
 class _FakePortfolioRepository implements PortfolioRepository {
   final Map<String, PortfolioSnapshotModel> _snapshots = {};
+  final List<CashMovementModel> cashMovements = [];
+  final List<PriceQuoteModel> quotes = [];
 
   @override
   Future<void> deleteSnapshot(String snapshotId) async {
     _snapshots.remove(snapshotId);
+  }
+
+  @override
+  Future<void> deleteCashMovement(String movementId) async {
+    cashMovements.removeWhere((item) => item.id == movementId);
+  }
+
+  @override
+  Future<void> deletePriceQuote(String quoteId) async {
+    quotes.removeWhere((item) => item.id == quoteId);
   }
 
   @override
@@ -82,13 +127,40 @@ class _FakePortfolioRepository implements PortfolioRepository {
   }
 
   @override
-  Future<void> upsertCashMovement(CashMovementModel movement) async {}
+  Future<List<CashMovementModel>> listCashMovements(
+    String accountId, {
+    int limit = 20,
+  }) async {
+    return cashMovements.where((item) => item.accountId == accountId).take(limit).toList();
+  }
+
+  @override
+  Future<List<PriceQuoteModel>> listPriceQuotes({int limit = 20}) async {
+    return quotes.take(limit).toList();
+  }
+
+  @override
+  Future<void> upsertCashMovement(CashMovementModel movement) async {
+    final index = cashMovements.indexWhere((item) => item.id == movement.id);
+    if (index >= 0) {
+      cashMovements[index] = movement;
+      return;
+    }
+    cashMovements.add(movement);
+  }
 
   @override
   Future<void> upsertPositionSnapshot(PositionSnapshotModel snapshot) async {}
 
   @override
-  Future<void> upsertPriceQuote(PriceQuoteModel quote) async {}
+  Future<void> upsertPriceQuote(PriceQuoteModel quote) async {
+    final index = quotes.indexWhere((item) => item.id == quote.id);
+    if (index >= 0) {
+      quotes[index] = quote;
+      return;
+    }
+    quotes.add(quote);
+  }
 
   @override
   Future<void> upsertSnapshot(PortfolioSnapshotModel snapshot) async {

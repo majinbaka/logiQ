@@ -72,6 +72,12 @@ class AppLocalizationsVi extends AppLocalizations {
   String get tradesInstrumentLabel => 'Mã instrument';
 
   @override
+  String get tradesStrategyVersionLabel => 'Phiên bản chiến lược';
+
+  @override
+  String get tradesStrategyNoneOption => 'Không chọn chiến lược';
+
+  @override
   String get tradesDirectionLabel => 'Chiều lệnh';
 
   @override
@@ -132,6 +138,26 @@ class AppLocalizationsVi extends AppLocalizations {
   String get tradesNumberValidationError => 'Vui lòng nhập số hợp lệ.';
 
   @override
+  String get tradesRequiredFieldValidationError => 'Trường này là bắt buộc.';
+
+  @override
+  String get tradesPositiveNumberValidationError => 'Vui lòng nhập số lớn hơn 0.';
+
+  @override
+  String get tradesNonNegativeNumberValidationError => 'Vui lòng nhập số không âm.';
+
+  @override
+  String tradesSellQuantityExceedsAvailable(String requested, String available) {
+    return 'Khối lượng bán $requested vượt quá khối lượng hiện có $available.';
+  }
+
+  @override
+  String get tradesUnitQuantity => 'cổ phiếu';
+
+  @override
+  String get tradesUnitCurrency => 'VND';
+
+  @override
   String get tradesMissingReferenceTitle => 'Thiếu tài khoản hoặc instrument';
 
   @override
@@ -145,6 +171,27 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get tradesValidationMessage => 'Vui lòng nhập instrument và ngày hợp lệ.';
+
+  @override
+  String get tradesInstrumentSearchAction => 'Tìm instrument';
+
+  @override
+  String get tradesInstrumentCreateAction => 'Tạo mới';
+
+  @override
+  String get tradesInstrumentPickerTitle => 'Chọn instrument';
+
+  @override
+  String get tradesInstrumentSearchHint => 'Tìm theo mã hoặc tên';
+
+  @override
+  String get tradesInstrumentSearchEmpty => 'Không tìm thấy instrument';
+
+  @override
+  String get tradesInstrumentCreateDialogTitle => 'Tạo instrument';
+
+  @override
+  String get tradesInstrumentCreateSymbolLabel => 'Mã';
 
   @override
   String get tradesEditTooltip => 'Sửa giao dịch';
@@ -234,6 +281,24 @@ class AppLocalizationsVi extends AppLocalizations {
   String get portfolioValidationMessage => 'Vui lòng nhập ngày snapshot hợp lệ.';
 
   @override
+  String get portfolioRequiredFieldValidationError => 'Trường này là bắt buộc.';
+
+  @override
+  String get portfolioDateValidationError => 'Vui lòng nhập ngày hợp lệ (YYYY-MM-DD).';
+
+  @override
+  String get portfolioNumberValidationError => 'Vui lòng nhập số hợp lệ.';
+
+  @override
+  String get portfolioInvalidEnumValidationError => 'Vui lòng chọn giá trị hợp lệ trong danh sách hỗ trợ.';
+
+  @override
+  String get portfolioPositiveNumberValidationError => 'Vui lòng nhập số lớn hơn 0.';
+
+  @override
+  String get portfolioUnitCurrency => 'VND';
+
+  @override
   String get portfolioEquityLabel => 'Vốn chủ';
 
   @override
@@ -285,10 +350,22 @@ class AppLocalizationsVi extends AppLocalizations {
   String get portfolioQuotePriceLabel => 'Giá';
 
   @override
+  String get portfolioQuotePriceTypeLabel => 'Loại giá';
+
+  @override
+  String get portfolioQuoteSourceLabel => 'Nguồn';
+
+  @override
   String get portfolioCashFormTitle => 'Nhập dòng tiền';
 
   @override
   String get portfolioCashAmountLabel => 'Số tiền';
+
+  @override
+  String get portfolioCashMovementTypeLabel => 'Loại dòng tiền';
+
+  @override
+  String get portfolioCashCurrencyLabel => 'Tiền tệ';
 
   @override
   String get portfolioSnapshotsTitle => 'Snapshots';
@@ -405,7 +482,16 @@ class AppLocalizationsVi extends AppLocalizations {
   String get riskRulePercentLabel => 'Phần trăm rủi ro mỗi lệnh';
 
   @override
+  String get riskRulePercentUnit => '%';
+
+  @override
+  String get riskRulePercentRangeError => 'Vui lòng nhập giá trị từ 0 đến 100.';
+
+  @override
   String get riskRuleDailyLossLabel => 'Lỗ ngày tối đa';
+
+  @override
+  String get riskRuleDailyLossUnit => 'VND';
 
   @override
   String get riskRuleValidationMessage => 'Vui lòng nhập tên quy tắc và ngày hiệu lực hợp lệ.';
@@ -747,4 +833,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String modulePlaceholder(String module) {
     return 'Module $module sẽ sớm có mặt.';
   }
+
+  @override
+  String get startupErrorTitle => 'Không thể khởi động ứng dụng';
+
+  @override
+  String get startupErrorBody => 'Một thành phần khởi tạo đã thất bại.';
+
+  @override
+  String get startupErrorRetryHint => 'Vui lòng khởi động lại ứng dụng và thử lại.';
 }

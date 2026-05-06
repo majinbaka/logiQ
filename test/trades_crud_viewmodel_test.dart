@@ -2,6 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:trading_diary/core/database/models/instrument_model.dart';
 import 'package:trading_diary/core/database/models/risk_check_model.dart';
 import 'package:trading_diary/core/database/models/risk_rule_model.dart';
+import 'package:trading_diary/core/database/models/strategy_model.dart';
+import 'package:trading_diary/core/database/models/strategy_version_model.dart';
 import 'package:trading_diary/core/database/models/trade_fill_model.dart';
 import 'package:trading_diary/core/database/models/trade_model.dart';
 import 'package:trading_diary/core/database/models/trading_account_model.dart';
@@ -9,6 +11,7 @@ import 'package:trading_diary/features/trades/presentation/viewmodels/trades_cru
 import 'package:trading_diary/repositories/contracts/account_repository.dart';
 import 'package:trading_diary/repositories/contracts/instrument_repository.dart';
 import 'package:trading_diary/repositories/contracts/risk_repository.dart';
+import 'package:trading_diary/repositories/contracts/strategy_repository.dart';
 import 'package:trading_diary/repositories/contracts/trade_repository.dart';
 
 void main() {
@@ -19,6 +22,7 @@ void main() {
       accountRepository: _FakeAccountRepository(),
       instrumentRepository: _FakeInstrumentRepository(),
       riskRepository: _FakeRiskRepository(),
+      strategyRepository: _FakeStrategyRepository(),
     );
 
     await vm.createTrade(
@@ -46,6 +50,36 @@ void main() {
 
     await vm.deleteTrade(vm.trades.first);
     expect(vm.trades, isEmpty);
+  });
+
+  test('reject sell quantity larger than available position', () async {
+    final repo = _FakeTradeRepository();
+    final vm = TradesCrudViewModel(
+      repository: repo,
+      accountRepository: _FakeAccountRepository(),
+      instrumentRepository: _FakeInstrumentRepository(),
+      riskRepository: _FakeRiskRepository(),
+      strategyRepository: _FakeStrategyRepository(),
+    );
+
+    await vm.createTrade(
+      accountId: 'acc_1',
+      instrumentId: 'ins_fpt',
+      direction: 'buy',
+      openedAt: DateTime.utc(2026, 5, 1),
+      quantityOpened: '10',
+    );
+
+    await expectLater(
+      () => vm.createTrade(
+        accountId: 'acc_1',
+        instrumentId: 'ins_fpt',
+        direction: 'sell',
+        openedAt: DateTime.utc(2026, 5, 2),
+        quantityOpened: '20',
+      ),
+      throwsA(isA<TradeQuantityValidationException>()),
+    );
   });
 }
 
@@ -209,4 +243,32 @@ class _FakeInstrumentRepository implements InstrumentRepository {
 
   @override
   Future<void> upsert(InstrumentModel instrument) async {}
+}
+
+class _FakeStrategyRepository implements StrategyRepository {
+  @override
+  Future<StrategyVersionModel> createVersionOnRuleEdit({
+    required String strategyId,
+    String? entryRules,
+    String? exitRules,
+    String? suitableMarketCondition,
+    String? commonMistakes,
+    DateTime? effectiveFrom,
+  }) async {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<StrategyModel>> listActiveStrategies() async => const [];
+
+  @override
+  Future<List<StrategyVersionModel>> listVersionsByStrategy(
+    String strategyId,
+  ) async => const [];
+
+  @override
+  Future<void> upsertStrategy(StrategyModel strategy) async {}
+
+  @override
+  Future<void> upsertVersion(StrategyVersionModel version) async {}
 }

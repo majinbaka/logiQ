@@ -405,3 +405,61 @@ Da bo sung hien thi vi pham risk trong Trade va Risk screen:
 - Trade detail hien thi ro trang thai `Followed/Violation` va ly do vi pham khi co.
 - `StrategyRiskView` bo sung section `Risk checks` de quan sat trang thai va ly do theo tung trade.
 - Toan bo text UI moi da duoc noi dia hoa EN/VI.
+
+## 21. Production Hardening Baseline (2026-05-05)
+
+Da bo sung cac nang cap cross-cutting de giam rui ro runtime:
+
+- Sua singleton `StorageInitializer`: `factory` tra ve dung `instance` duy nhat.
+- Tang do ben startup: bootstrap duoc bao boi `runZonedGuarded`, neu khoi tao that bai se hien thi startup error screen thay vi crash trang.
+- Da danh gia huong giu state tab; tam thoi giu implementation hien tai de dam bao test stability, se tach thanh hardening slice rieng.
+- Bo sung checklist readiness tai `docs/PRODUCTION_READINESS_CHECKLIST.md` de theo doi cac hang muc can dat truoc release.
+
+## 22. Trades Data Mapping Flow (2026-05-05)
+
+Da bo sung lien ket du lieu giua Trades va Strategy de giam nhap tay roi rac:
+
+- Form tao/sua trade co them lua chon `Strategy version` (co the chon `Khong chon chien luoc`).
+- Khi luu trade, `strategyVersionId` duoc luu truc tiep vao `TradeModel` thay vi bo trong.
+- Danh sach trade hien thi ma instrument da map sang `symbol` thay vi chi hien `instrumentId`.
+- Danh sach trade hien thi them nhan strategy version neu trade co lien ket.
+
+Ket qua:
+
+- Du lieu lien quan giua man Strategy va Trades duoc map ro rang hon.
+- Nguoi dung co lua chon tren UI thay vi phai manual hoan toan de nho mapping ngoai he thong.
+
+## 20. Portfolio Input Maintenance + Holding Sync (2026-05-05)
+
+Da cap nhat tab Portfolio de xu ly gap van de quote/cash khong sua-xoa duoc va holding rong khi account khong trung `acc_1`:
+
+- Bo sung API repository de xoa `PriceQuote` va `CashMovement` theo `id`.
+- Bo sung action `edit/delete` ngay tren danh sach quote va cash movement trong `PortfolioCrudView`.
+- Form quote/cash ho tro mode edit (prefill du lieu cu, luu de update ban ghi hien co theo id).
+- `PortfolioCrudViewModel` resolve account tu danh sach account active (fallback ve `acc_1`) thay vi phu thuoc cung vao id hardcode.
+
+He qua:
+
+- Quote va cash movement co the them/sua/xoa day du.
+- Holdings va du lieu cash movement sap xep theo account active, tranh hien thi rong sai account.
+
+## 21. Shared Instrument-Date Component (2026-05-05)
+
+- Tao component dung chung `InstrumentDateSummary` de hien thi cap gia tri `instrument + date` nhat quan.
+- Ap dung cho Holdings trong Portfolio, danh sach quote, va trade list tile.
+- Holdings hien thi du lieu `instrument id` kem `as-of date` (thoi diem tinh holdings) de tranh trong thong tin.
+
+## 22. Portfolio Quote/Cash Input Alignment With ERD (2026-05-05)
+
+Da cap nhat form tao/sua input Portfolio de day du hon theo ERD:
+
+- `PriceQuote` form them `price_type` va `source`; luu xuong model/repository thay vi bo trong.
+- `CashMovement` form them `movement_type` va `currency`; khong con khoa cung `deposit` va currency mac dinh khong theo input.
+- Danh sach quote/cash hien thi them metadata moi de de kiem tra du lieu da nhap.
+- Bo sung i18n EN/VI cho cac truong moi (`price type`, `source`, `movement type`, `currency`).
+
+Cap nhat tiep theo de chuan hoa enum:
+
+- `movement_type` duoc khoa theo tap co dinh: `deposit`, `withdrawal`, `dividend`, `fee`, `tax`, `adjustment`.
+- `price_type` duoc gioi han theo tap co dinh: `last`, `close`, `bid`, `ask`, `mark` (cho phep de trong neu chua xac dinh).
+- ViewModel reject `movement_type` khong hop le de tranh du lieu lech schema.

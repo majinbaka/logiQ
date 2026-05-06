@@ -24,11 +24,11 @@ class SeedFixtures {
 
   static List<InstrumentModel> instruments() => [
     InstrumentModel(
-      id: 'ins_fpt',
-      symbol: 'FPT',
+      id: 'ins_vnm',
+      symbol: 'VNM',
       assetClass: 'stock',
       currency: 'VND',
-      name: 'FPT Corp',
+      name: 'Vinamilk',
       createdAt: _now,
     ),
   ];
@@ -50,7 +50,7 @@ class SeedFixtures {
   static TradeModel trade() => TradeModel(
     id: 'tr_1',
     accountId: 'acc_1',
-    instrumentId: 'ins_fpt',
+    instrumentId: 'ins_vnm',
     strategyVersionId: 'strv_1',
     direction: 'buy',
     status: 'open',

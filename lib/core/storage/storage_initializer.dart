@@ -1,21 +1,30 @@
-import 'package:hive/hive.dart';
+import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
+
+import '../seed/seed_fixtures.dart';
 import 'storage_boxes.dart';
 
 class StorageInitializer {
   StorageInitializer._internal();
 
   static final StorageInitializer instance = StorageInitializer._internal();
-  factory StorageInitializer() => StorageInitializer._internal();
+  factory StorageInitializer() => instance;
 
   static const int schemaVersion = 1;
   static const String _schemaVersionKey = 'version';
+  static const String _hiveDirectoryName = 'hive';
   bool _initialized = false;
+  bool _hiveInitialized = false;
 
   Future<void> initialize() async {
     if (_initialized) {
       return;
     }
+    await _initializeHiveIfNeeded();
 
     for (final boxName in StorageBoxes.all) {
       if (!Hive.isBoxOpen(boxName)) {
@@ -40,6 +49,7 @@ class StorageInitializer {
         toVersion: schemaVersion,
       );
     }
+    await _seedReferenceDataIfNeeded();
     await schemaBox.put(_schemaVersionKey, schemaVersion);
 
     _initialized = true;
@@ -47,6 +57,37 @@ class StorageInitializer {
 
   void resetForTest() {
     _initialized = false;
+    _hiveInitialized = false;
+  }
+
+  Future<void> _initializeHiveIfNeeded() async {
+    if (_hiveInitialized || kIsWeb) {
+      return;
+    }
+    final appSupportDirectory = await _resolveStorageDirectory();
+    final hiveDirectory = Directory(
+      '${appSupportDirectory.path}/$_hiveDirectoryName',
+    );
+    if (!hiveDirectory.existsSync()) {
+      await hiveDirectory.create(recursive: true);
+    }
+    Hive.init(hiveDirectory.path);
+    _hiveInitialized = true;
+  }
+
+  Future<Directory> _resolveStorageDirectory() async {
+    try {
+      return await getApplicationSupportDirectory();
+    } on MissingPluginException {
+      return _buildFallbackDirectory();
+    } on FlutterError {
+      return _buildFallbackDirectory();
+    }
+  }
+
+  Directory _buildFallbackDirectory() {
+    final suffix = DateTime.now().microsecondsSinceEpoch;
+    return Directory('${Directory.systemTemp.path}/trading_diary_${pid}_$suffix');
   }
 
   int _tryParseSchemaVersion(Object? value) {
@@ -72,6 +113,34 @@ class StorageInitializer {
         case 1:
           break;
       }
+    }
+  }
+
+  Future<void> _seedReferenceDataIfNeeded() async {
+    final accountsBox = Hive.box<Map>(StorageBoxes.tradingAccounts);
+    final instrumentsBox = Hive.box<Map>(StorageBoxes.instruments);
+    final strategiesBox = Hive.box<Map>(StorageBoxes.strategies);
+    final strategyVersionsBox = Hive.box<Map>(StorageBoxes.strategyVersions);
+
+    if (accountsBox.isEmpty) {
+      final account = SeedFixtures.account();
+      await accountsBox.put(account.id, account.toMap());
+    }
+
+    if (instrumentsBox.isEmpty) {
+      for (final instrument in SeedFixtures.instruments()) {
+        await instrumentsBox.put(instrument.id, instrument.toMap());
+      }
+    }
+
+    if (strategiesBox.isEmpty) {
+      final strategy = SeedFixtures.strategy();
+      await strategiesBox.put(strategy.id, strategy.toMap());
+    }
+
+    if (strategyVersionsBox.isEmpty) {
+      final version = SeedFixtures.strategyVersion();
+      await strategyVersionsBox.put(version.id, version.toMap());
     }
   }
 }

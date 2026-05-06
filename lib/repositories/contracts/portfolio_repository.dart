@@ -38,6 +38,13 @@ abstract class PortfolioRepository {
   Future<void> upsertPositionSnapshot(PositionSnapshotModel snapshot);
   Future<void> upsertCashMovement(CashMovementModel movement);
   Future<void> upsertPriceQuote(PriceQuoteModel quote);
+  Future<void> deleteCashMovement(String movementId);
+  Future<void> deletePriceQuote(String quoteId);
+  Future<List<CashMovementModel>> listCashMovements(
+    String accountId, {
+    int limit = 20,
+  });
+  Future<List<PriceQuoteModel>> listPriceQuotes({int limit = 20});
   Future<void> deleteSnapshot(String snapshotId);
   Future<List<PortfolioSnapshotModel>> listPortfolioSnapshots(
     String accountId,

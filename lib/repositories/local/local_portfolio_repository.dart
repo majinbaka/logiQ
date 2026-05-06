@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 
 import '../../core/database/models/cash_movement_model.dart';
+import '../../core/database/models/instrument_model.dart';
 import '../../core/database/models/position_snapshot_model.dart';
 import '../../core/database/models/portfolio_snapshot_model.dart';
 import '../../core/database/models/price_quote_model.dart';
@@ -19,6 +20,7 @@ class LocalPortfolioRepository implements PortfolioRepository {
     Box<Map>? quoteBox,
     Box<Map>? tradeBox,
     Box<Map>? fillBox,
+    Box<Map>? instrumentBox,
     Clock? clock,
   }) : _snapshotBox = snapshotBox ?? Hive.box(StorageBoxes.portfolioSnapshots),
        _positionSnapshotBox =
@@ -28,6 +30,7 @@ class LocalPortfolioRepository implements PortfolioRepository {
        _quoteBox = quoteBox ?? Hive.box(StorageBoxes.priceQuotes),
        _tradeBox = tradeBox ?? Hive.box(StorageBoxes.trades),
        _fillBox = fillBox ?? Hive.box(StorageBoxes.tradeFills),
+       _instrumentBox = instrumentBox ?? Hive.box(StorageBoxes.instruments),
        _clock = clock ?? const SystemClock();
 
   final Box<Map> _snapshotBox;
@@ -36,6 +39,7 @@ class LocalPortfolioRepository implements PortfolioRepository {
   final Box<Map> _quoteBox;
   final Box<Map> _tradeBox;
   final Box<Map> _fillBox;
+  final Box<Map> _instrumentBox;
   final Clock _clock;
 
   @override
@@ -79,8 +83,48 @@ class LocalPortfolioRepository implements PortfolioRepository {
       _cashMovementBox.put(movement.id, movement.toMap());
 
   @override
-  Future<void> upsertPriceQuote(PriceQuoteModel quote) =>
-      _quoteBox.put(quote.id, quote.toMap());
+  Future<void> upsertPriceQuote(PriceQuoteModel quote) {
+    final normalizedInstrumentId = _normalizeInstrumentId(quote.instrumentId);
+    final normalizedQuote = PriceQuoteModel(
+      id: quote.id,
+      instrumentId: normalizedInstrumentId,
+      quotedAt: quote.quotedAt,
+      price: quote.price,
+      priceType: quote.priceType,
+      source: quote.source,
+      createdAt: quote.createdAt,
+    );
+    return _quoteBox.put(normalizedQuote.id, normalizedQuote.toMap());
+  }
+
+  @override
+  Future<void> deleteCashMovement(String movementId) =>
+      _cashMovementBox.delete(movementId);
+
+  @override
+  Future<void> deletePriceQuote(String quoteId) => _quoteBox.delete(quoteId);
+
+  @override
+  Future<List<CashMovementModel>> listCashMovements(
+    String accountId, {
+    int limit = 20,
+  }) async {
+    final items = _cashMovementBox.values
+        .map((value) => CashMovementModel.fromMap(toDbJson(value)))
+        .where((item) => item.accountId == accountId)
+        .toList(growable: false);
+    items.sort((a, b) => b.movementDate.compareTo(a.movementDate));
+    return items.take(limit).toList(growable: false);
+  }
+
+  @override
+  Future<List<PriceQuoteModel>> listPriceQuotes({int limit = 20}) async {
+    final items = _quoteBox.values
+        .map((value) => PriceQuoteModel.fromMap(toDbJson(value)))
+        .toList(growable: false);
+    items.sort((a, b) => b.quotedAt.compareTo(a.quotedAt));
+    return items.take(limit).toList(growable: false);
+  }
 
   @override
   Future<void> deleteSnapshot(String snapshotId) async {
@@ -223,6 +267,7 @@ class LocalPortfolioRepository implements PortfolioRepository {
         .where((fill) => tradesById.containsKey(fill.tradeId))
         .toList(growable: false);
     fills.sort((a, b) => a.executedAt.compareTo(b.executedAt));
+    final filledTradeIds = fills.map((fill) => fill.tradeId).toSet();
 
     final map = <String, _HoldingAccumulator>{};
     for (final fill in fills) {
@@ -251,6 +296,29 @@ class LocalPortfolioRepository implements PortfolioRepository {
         state.costTotal = state.quantity * avgCost;
       }
     }
+    for (final trade in trades) {
+      if (filledTradeIds.contains(trade.id)) continue;
+      if (trade.openedAt == null || trade.openedAt!.isAfter(asOf)) continue;
+      if (trade.status.toLowerCase() == 'draft') continue;
+      final quantity = _toDouble(trade.quantityOpened);
+      final entryPrice = _toDouble(trade.avgEntryPrice);
+      if (quantity <= 0 || entryPrice <= 0) continue;
+      final signedQty = _signedFillQuantity(trade.direction, null, quantity);
+      final state = map.putIfAbsent(trade.instrumentId, _HoldingAccumulator.new);
+      if (signedQty > 0) {
+        state.quantity += signedQty;
+        state.costTotal += signedQty * entryPrice;
+      } else {
+        final sellQty = signedQty.abs();
+        final avgCost = state.quantity <= 0
+            ? 0
+            : state.costTotal / state.quantity;
+        state.quantity = (state.quantity - sellQty)
+            .clamp(0, double.infinity)
+            .toDouble();
+        state.costTotal = state.quantity * avgCost;
+      }
+    }
 
     final latestQuotes = _latestQuotesByInstrument(asOf);
     map.removeWhere((_, value) => value.quantity <= 0);
@@ -266,16 +334,37 @@ class LocalPortfolioRepository implements PortfolioRepository {
 
   Map<String, double> _latestQuotesByInstrument(DateTime asOf) {
     final latest = <String, PriceQuoteModel>{};
+    final symbolsByUpper = <String, String>{};
+    for (final instrument in readActive(_instrumentBox, InstrumentModel.fromMap)) {
+      symbolsByUpper[instrument.symbol.trim().toUpperCase()] = instrument.id;
+    }
     final quotes = _quoteBox.values
         .map((value) => PriceQuoteModel.fromMap(toDbJson(value)))
         .where((quote) => !quote.quotedAt.isAfter(asOf));
     for (final quote in quotes) {
-      final existing = latest[quote.instrumentId];
+      final rawInstrumentId = quote.instrumentId.trim();
+      if (rawInstrumentId.isEmpty) continue;
+      final normalizedInstrumentId =
+          symbolsByUpper[rawInstrumentId.toUpperCase()] ?? rawInstrumentId;
+      final existing = latest[normalizedInstrumentId];
       if (existing == null || quote.quotedAt.isAfter(existing.quotedAt)) {
-        latest[quote.instrumentId] = quote;
+        latest[normalizedInstrumentId] = quote;
       }
     }
     return latest.map((key, value) => MapEntry(key, _toDouble(value.price)));
+  }
+
+  String _normalizeInstrumentId(String rawInstrumentId) {
+    final trimmed = rawInstrumentId.trim();
+    if (trimmed.isEmpty) return trimmed;
+    final upper = trimmed.toUpperCase();
+    for (final instrument in readActive(_instrumentBox, InstrumentModel.fromMap)) {
+      if (instrument.id == trimmed) return trimmed;
+      if (instrument.symbol.trim().toUpperCase() == upper) {
+        return instrument.id;
+      }
+    }
+    return trimmed;
   }
 
   double _sumNetDepositToDate(String accountId, DateTime asOf) {
@@ -292,13 +381,16 @@ class LocalPortfolioRepository implements PortfolioRepository {
   double _sumTradeCashFlowToDate(String accountId, DateTime asOf) {
     final trades = readActive(
       _tradeBox,
-      TradeModel.fromMap,
+    TradeModel.fromMap,
     ).where((trade) => trade.accountId == accountId).toList(growable: false);
     final tradeById = {for (final trade in trades) trade.id: trade};
-    return readActive(_fillBox, TradeFillModel.fromMap)
+    final fills = readActive(_fillBox, TradeFillModel.fromMap)
         .where((fill) => !fill.executedAt.isAfter(asOf))
         .where((fill) => tradeById.containsKey(fill.tradeId))
-        .fold<double>(0, (sum, fill) {
+        .toList(growable: false);
+    final tradeIdsWithFill = fills.map((fill) => fill.tradeId).toSet();
+
+    var total = fills.fold<double>(0, (sum, fill) {
           final trade = tradeById[fill.tradeId];
           if (trade == null) return sum;
           if (fill.netCashFlow != null) {
@@ -314,6 +406,23 @@ class LocalPortfolioRepository implements PortfolioRepository {
           final cashFlow = -(directionSign * gross) - feeTax;
           return sum + cashFlow;
         });
+
+    for (final trade in trades) {
+      if (tradeIdsWithFill.contains(trade.id)) continue;
+      if (trade.status.toLowerCase() == 'draft') continue;
+      final openedAt = trade.openedAt;
+      if (openedAt == null || openedAt.isAfter(asOf)) continue;
+      final quantity = _toDouble(trade.quantityOpened);
+      final entryPrice = _toDouble(trade.avgEntryPrice);
+      if (quantity <= 0 || entryPrice <= 0) continue;
+      final gross = quantity * entryPrice;
+      final feeTax = _toDouble(trade.totalFee) + _toDouble(trade.totalTax);
+      final directionSign = _signedFillQuantity(trade.direction, null, 1);
+      final cashFlow = -(directionSign * gross) - feeTax;
+      total += cashFlow;
+    }
+
+    return total;
   }
 
   PortfolioSnapshotModel? _latestSnapshotBefore(

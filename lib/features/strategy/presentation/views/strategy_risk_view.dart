@@ -261,6 +261,15 @@ class _StrategyRiskViewState extends State<StrategyRiskView> {
           label: l10n.strategyEffectiveFromLabel,
           controller: effectiveController,
           hintText: l10n.dateFormatHint,
+          readOnly: true,
+          suffixIcon: const Icon(Icons.calendar_today_outlined),
+          onTap: () => _pickDateIntoController(context, effectiveController),
+          validator: (value) {
+            if (DateTime.tryParse((value ?? '').trim()) == null) {
+              return l10n.strategyValidationMessage;
+            }
+            return null;
+          },
         ),
       ],
     );
@@ -331,6 +340,15 @@ class _StrategyRiskViewState extends State<StrategyRiskView> {
           label: l10n.strategyEffectiveFromLabel,
           controller: effectiveController,
           hintText: l10n.dateFormatHint,
+          readOnly: true,
+          suffixIcon: const Icon(Icons.calendar_today_outlined),
+          onTap: () => _pickDateIntoController(context, effectiveController),
+          validator: (value) {
+            if (DateTime.tryParse((value ?? '').trim()) == null) {
+              return l10n.strategyValidationMessage;
+            }
+            return null;
+          },
         ),
       ],
     );
@@ -386,15 +404,32 @@ class _StrategyRiskViewState extends State<StrategyRiskView> {
         _FormFieldConfig(
           label: l10n.riskRulePercentLabel,
           controller: riskPercentController,
+          suffixText: l10n.riskRulePercentUnit,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          validator: (value) =>
+              _validateOptionalPercent(value, l10n: l10n),
         ),
         _FormFieldConfig(
           label: l10n.riskRuleDailyLossLabel,
           controller: maxDailyLossController,
+          suffixText: l10n.riskRuleDailyLossUnit,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          validator: (value) =>
+              _validateOptionalNonNegativeNumber(value, l10n: l10n),
         ),
         _FormFieldConfig(
           label: l10n.strategyEffectiveFromLabel,
           controller: effectiveController,
           hintText: l10n.dateFormatHint,
+          readOnly: true,
+          suffixIcon: const Icon(Icons.calendar_today_outlined),
+          onTap: () => _pickDateIntoController(context, effectiveController),
+          validator: (value) {
+            if (DateTime.tryParse((value ?? '').trim()) == null) {
+              return l10n.riskRuleValidationMessage;
+            }
+            return null;
+          },
         ),
       ],
     );
@@ -454,6 +489,7 @@ class _StrategyRiskViewState extends State<StrategyRiskView> {
       context: context,
       isScrollControlled: true,
       builder: (context) {
+        final formKey = GlobalKey<FormState>();
         return SingleChildScrollView(
           padding: EdgeInsets.only(
             left: TradingUiSpacing.md,
@@ -462,20 +498,28 @@ class _StrategyRiskViewState extends State<StrategyRiskView> {
             bottom:
                 MediaQuery.of(context).viewInsets.bottom + TradingUiSpacing.md,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+          child: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
               Text(title, style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: TradingUiSpacing.md),
               ...fields.map(
                 (field) => Padding(
                   padding: const EdgeInsets.only(bottom: TradingUiSpacing.sm),
-                  child: TextField(
+                  child: TextFormField(
                     controller: field.controller,
+                    readOnly: field.readOnly,
+                    onTap: field.onTap,
+                    keyboardType: field.keyboardType,
+                    validator: field.validator,
                     decoration: InputDecoration(
                       labelText: field.label,
                       hintText: field.hintText,
+                      suffixText: field.suffixText,
+                      suffixIcon: field.suffixIcon,
                     ),
                   ),
                 ),
@@ -492,13 +536,19 @@ class _StrategyRiskViewState extends State<StrategyRiskView> {
                   const SizedBox(width: TradingUiSpacing.sm),
                   Expanded(
                     child: FilledButton(
-                      onPressed: () => Navigator.pop(context, true),
+                      onPressed: () {
+                        if (formKey.currentState?.validate() != true) {
+                          return;
+                        }
+                        Navigator.pop(context, true);
+                      },
                       child: Text(l10n.tradesSave),
                     ),
                   ),
                 ],
               ),
             ],
+            ),
           ),
         );
       },
@@ -517,6 +567,49 @@ class _StrategyRiskViewState extends State<StrategyRiskView> {
     final day = now.day.toString().padLeft(2, '0');
     return '${now.year}-$month-$day';
   }
+
+  Future<void> _pickDateIntoController(
+    BuildContext context,
+    TextEditingController controller,
+  ) async {
+    final initial = DateTime.tryParse(controller.text.trim()) ?? DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initial,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+    if (picked == null) return;
+    final month = picked.month.toString().padLeft(2, '0');
+    final day = picked.day.toString().padLeft(2, '0');
+    controller.text = '${picked.year}-$month-$day';
+  }
+
+  String? _validateOptionalPercent(
+    String? raw, {
+    required AppLocalizations l10n,
+  }) {
+    final text = (raw ?? '').trim();
+    if (text.isEmpty) return null;
+    final value = num.tryParse(text);
+    if (value == null) return l10n.tradesNumberValidationError;
+    if (value < 0 || value > 100) {
+      return l10n.riskRulePercentRangeError;
+    }
+    return null;
+  }
+
+  String? _validateOptionalNonNegativeNumber(
+    String? raw, {
+    required AppLocalizations l10n,
+  }) {
+    final text = (raw ?? '').trim();
+    if (text.isEmpty) return null;
+    final value = num.tryParse(text);
+    if (value == null) return l10n.tradesNumberValidationError;
+    if (value < 0) return l10n.tradesNonNegativeNumberValidationError;
+    return null;
+  }
 }
 
 class _FormFieldConfig {
@@ -524,9 +617,21 @@ class _FormFieldConfig {
     required this.label,
     required this.controller,
     this.hintText,
+    this.suffixText,
+    this.readOnly = false,
+    this.onTap,
+    this.suffixIcon,
+    this.keyboardType,
+    this.validator,
   });
 
   final String label;
   final TextEditingController controller;
   final String? hintText;
+  final String? suffixText;
+  final bool readOnly;
+  final VoidCallback? onTap;
+  final Widget? suffixIcon;
+  final TextInputType? keyboardType;
+  final String? Function(String?)? validator;
 }

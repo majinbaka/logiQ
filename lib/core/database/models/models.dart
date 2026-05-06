@@ -9,6 +9,7 @@ export 'instrument_model.dart';
 export 'instrument_note_model.dart';
 export 'instrument_note_update_model.dart';
 export 'portfolio_snapshot_model.dart';
+export 'portfolio_input_enums.dart';
 export 'position_snapshot_model.dart';
 export 'price_quote_model.dart';
 export 'risk_check_model.dart';

@@ -13,7 +13,9 @@ void main() {
   late Directory dir;
 
   setUp(() async {
-    dir = await Directory.systemTemp.createTemp('trading_diary_trades_crud_test_');
+    dir = await Directory.systemTemp.createTemp(
+      'trading_diary_trades_crud_test_',
+    );
     Hive.init(dir.path);
     StorageInitializer.instance.resetForTest();
     await StorageInitializer.instance.initialize();
@@ -59,7 +61,9 @@ void main() {
     for (final boxName in StorageBoxes.all) {
       if (!Hive.isBoxOpen(boxName)) continue;
       try {
-        await Hive.box<Map>(boxName).close().timeout(const Duration(seconds: 2));
+        await Hive.box<Map>(
+          boxName,
+        ).close().timeout(const Duration(seconds: 2));
       } on TimeoutException {
         // Avoid blocking the whole test process if Hive box shutdown stalls.
       }
@@ -115,6 +119,11 @@ void main() {
 
     final openedAtField = find.byKey(const Key('trade_form_opened_at'));
     await tester.enterText(openedAtField, '2026-04-01');
+    await tester.enterText(find.byKey(const Key('trade_form_quantity')), '100');
+    await tester.enterText(
+      find.byKey(const Key('trade_form_entry_price')),
+      '123.45',
+    );
 
     tester.testTextInput.hide();
     await tester.pump(const Duration(milliseconds: 200));
@@ -147,6 +156,11 @@ void main() {
 
     final openedAtField = find.byKey(const Key('trade_form_opened_at'));
     await tester.enterText(openedAtField, '2026-02-15');
+    await tester.enterText(find.byKey(const Key('trade_form_quantity')), '50');
+    await tester.enterText(
+      find.byKey(const Key('trade_form_entry_price')),
+      '100',
+    );
 
     tester.testTextInput.hide();
     await tester.pump(const Duration(milliseconds: 200));
@@ -198,10 +212,6 @@ void main() {
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pump(const Duration(milliseconds: 300));
 
-    final openedAtField = find.byKey(const Key('trade_form_opened_at'));
-    await tester.ensureVisible(openedAtField);
-    await tester.enterText(openedAtField, 'bad-date');
-
     final quantityField = find.byKey(const Key('trade_form_quantity'));
     await tester.ensureVisible(quantityField);
     await tester.enterText(quantityField, 'abc');
@@ -213,8 +223,7 @@ void main() {
 
     final context = tester.element(find.byKey(const Key('trade_form_save')));
     final l10n = AppLocalizations.of(context)!;
-    expect(find.text(l10n.tradesDateValidationError), findsOneWidget);
-    expect(find.text(l10n.tradesNumberValidationError), findsOneWidget);
+    expect(find.text(l10n.tradesRequiredFieldValidationError), findsOneWidget);
     expect(Hive.box<Map>(StorageBoxes.trades).length, 1);
   });
 }

@@ -275,27 +275,28 @@ class _InsightsViewState extends State<InsightsView> {
     });
 
     try {
-      final now = DateTime.now().toUtc();
-      final start = DateTime.utc(now.year, now.month, now.day).subtract(
-        const Duration(days: 90),
-      );
-
-      await _insightRepository.generateForAccount(_defaultAccountId, start, now);
-      final insights = await _insightRepository.listActiveByAccount(_defaultAccountId);
-      final facts = _tradeFactBox.values
+      final allFacts = _tradeFactBox.values
           .map((value) => AnalyticsTradeFactModel.fromMap(toDbJson(value)))
-          .where((item) => item.accountId == _defaultAccountId)
-          .where((item) {
-            final anchor = item.closedDate ?? item.openedDate;
-            if (anchor == null) return false;
-            return !anchor.isBefore(start) && !anchor.isAfter(now);
-          })
+          .toList(growable: false);
+      final selectedAccountId = _resolveAccountId(allFacts);
+      final facts = allFacts
+          .where((item) => item.accountId == selectedAccountId)
           .toList(growable: false)
         ..sort((a, b) {
           final left = a.closedDate ?? a.openedDate ?? DateTime.fromMillisecondsSinceEpoch(0);
           final right = b.closedDate ?? b.openedDate ?? DateTime.fromMillisecondsSinceEpoch(0);
           return right.compareTo(left);
         });
+      final (periodStart, periodEnd) = _resolveInsightPeriod(facts);
+
+      await _insightRepository.generateForAccount(
+        selectedAccountId,
+        periodStart,
+        periodEnd,
+      );
+      final insights = await _insightRepository.listActiveByAccount(
+        selectedAccountId,
+      );
 
       final behaviorLabels = _buildBehaviorLabelsByTradeId();
 
@@ -313,6 +314,32 @@ class _InsightsViewState extends State<InsightsView> {
         setState(() => _isLoading = false);
       }
     }
+  }
+
+  String _resolveAccountId(List<AnalyticsTradeFactModel> allFacts) {
+    if (allFacts.isEmpty) return _defaultAccountId;
+    allFacts.sort((a, b) {
+      final left = a.closedDate ?? a.openedDate ?? DateTime.fromMillisecondsSinceEpoch(0);
+      final right = b.closedDate ?? b.openedDate ?? DateTime.fromMillisecondsSinceEpoch(0);
+      return right.compareTo(left);
+    });
+    return allFacts.first.accountId;
+  }
+
+  (DateTime, DateTime) _resolveInsightPeriod(List<AnalyticsTradeFactModel> facts) {
+    final now = DateTime.now().toUtc();
+    final anchors = facts
+        .map((item) => item.closedDate ?? item.openedDate)
+        .whereType<DateTime>()
+        .toList(growable: false);
+    if (anchors.isEmpty) {
+      final fallbackStart = DateTime.utc(now.year, now.month, now.day).subtract(
+        const Duration(days: 90),
+      );
+      return (fallbackStart, now);
+    }
+    anchors.sort();
+    return (anchors.first, anchors.last);
   }
 
   Map<String, String> _buildBehaviorLabelsByTradeId() {

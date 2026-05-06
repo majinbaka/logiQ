@@ -72,6 +72,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tradesInstrumentLabel => 'Instrument ID';
 
   @override
+  String get tradesStrategyVersionLabel => 'Strategy version';
+
+  @override
+  String get tradesStrategyNoneOption => 'No strategy';
+
+  @override
   String get tradesDirectionLabel => 'Direction';
 
   @override
@@ -132,6 +138,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tradesNumberValidationError => 'Please enter a valid number.';
 
   @override
+  String get tradesRequiredFieldValidationError => 'This field is required.';
+
+  @override
+  String get tradesPositiveNumberValidationError => 'Please enter a number greater than 0.';
+
+  @override
+  String get tradesNonNegativeNumberValidationError => 'Please enter a non-negative number.';
+
+  @override
+  String tradesSellQuantityExceedsAvailable(String requested, String available) {
+    return 'Sell quantity $requested exceeds available quantity $available.';
+  }
+
+  @override
+  String get tradesUnitQuantity => 'shares';
+
+  @override
+  String get tradesUnitCurrency => 'VND';
+
+  @override
   String get tradesMissingReferenceTitle => 'Missing account or instrument';
 
   @override
@@ -145,6 +171,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tradesValidationMessage => 'Please enter a valid instrument and date.';
+
+  @override
+  String get tradesInstrumentSearchAction => 'Search instrument';
+
+  @override
+  String get tradesInstrumentCreateAction => 'Create new';
+
+  @override
+  String get tradesInstrumentPickerTitle => 'Select instrument';
+
+  @override
+  String get tradesInstrumentSearchHint => 'Search by symbol or name';
+
+  @override
+  String get tradesInstrumentSearchEmpty => 'No instruments found';
+
+  @override
+  String get tradesInstrumentCreateDialogTitle => 'Create instrument';
+
+  @override
+  String get tradesInstrumentCreateSymbolLabel => 'Symbol';
 
   @override
   String get tradesEditTooltip => 'Edit trade';
@@ -234,6 +281,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get portfolioValidationMessage => 'Please enter a valid snapshot date.';
 
   @override
+  String get portfolioRequiredFieldValidationError => 'This field is required.';
+
+  @override
+  String get portfolioDateValidationError => 'Please enter a valid date (YYYY-MM-DD).';
+
+  @override
+  String get portfolioNumberValidationError => 'Please enter a valid number.';
+
+  @override
+  String get portfolioInvalidEnumValidationError => 'Please select a supported value.';
+
+  @override
+  String get portfolioPositiveNumberValidationError => 'Please enter a number greater than 0.';
+
+  @override
+  String get portfolioUnitCurrency => 'VND';
+
+  @override
   String get portfolioEquityLabel => 'Equity';
 
   @override
@@ -285,10 +350,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get portfolioQuotePriceLabel => 'Price';
 
   @override
+  String get portfolioQuotePriceTypeLabel => 'Price type';
+
+  @override
+  String get portfolioQuoteSourceLabel => 'Source';
+
+  @override
   String get portfolioCashFormTitle => 'Cash movement input';
 
   @override
   String get portfolioCashAmountLabel => 'Amount';
+
+  @override
+  String get portfolioCashMovementTypeLabel => 'Movement type';
+
+  @override
+  String get portfolioCashCurrencyLabel => 'Currency';
 
   @override
   String get portfolioSnapshotsTitle => 'Snapshots';
@@ -405,7 +482,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get riskRulePercentLabel => 'Risk percent per trade';
 
   @override
+  String get riskRulePercentUnit => '%';
+
+  @override
+  String get riskRulePercentRangeError => 'Please enter a value from 0 to 100.';
+
+  @override
   String get riskRuleDailyLossLabel => 'Max daily loss';
+
+  @override
+  String get riskRuleDailyLossUnit => 'VND';
 
   @override
   String get riskRuleValidationMessage => 'Please enter a rule name and a valid effective date.';
@@ -747,4 +833,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String modulePlaceholder(String module) {
     return '$module module is coming soon.';
   }
+
+  @override
+  String get startupErrorTitle => 'Unable to start the app';
+
+  @override
+  String get startupErrorBody => 'A startup dependency failed to initialize.';
+
+  @override
+  String get startupErrorRetryHint => 'Please restart the app and try again.';
 }

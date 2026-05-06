@@ -221,6 +221,18 @@ abstract class AppLocalizations {
   /// **'Instrument ID'**
   String get tradesInstrumentLabel;
 
+  /// No description provided for @tradesStrategyVersionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Strategy version'**
+  String get tradesStrategyVersionLabel;
+
+  /// No description provided for @tradesStrategyNoneOption.
+  ///
+  /// In en, this message translates to:
+  /// **'No strategy'**
+  String get tradesStrategyNoneOption;
+
   /// No description provided for @tradesDirectionLabel.
   ///
   /// In en, this message translates to:
@@ -341,6 +353,42 @@ abstract class AppLocalizations {
   /// **'Please enter a valid number.'**
   String get tradesNumberValidationError;
 
+  /// No description provided for @tradesRequiredFieldValidationError.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required.'**
+  String get tradesRequiredFieldValidationError;
+
+  /// No description provided for @tradesPositiveNumberValidationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a number greater than 0.'**
+  String get tradesPositiveNumberValidationError;
+
+  /// No description provided for @tradesNonNegativeNumberValidationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a non-negative number.'**
+  String get tradesNonNegativeNumberValidationError;
+
+  /// Shown when sell quantity is greater than current holdings.
+  ///
+  /// In en, this message translates to:
+  /// **'Sell quantity {requested} exceeds available quantity {available}.'**
+  String tradesSellQuantityExceedsAvailable(String requested, String available);
+
+  /// No description provided for @tradesUnitQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'shares'**
+  String get tradesUnitQuantity;
+
+  /// No description provided for @tradesUnitCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'VND'**
+  String get tradesUnitCurrency;
+
   /// No description provided for @tradesMissingReferenceTitle.
   ///
   /// In en, this message translates to:
@@ -370,6 +418,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please enter a valid instrument and date.'**
   String get tradesValidationMessage;
+
+  /// No description provided for @tradesInstrumentSearchAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Search instrument'**
+  String get tradesInstrumentSearchAction;
+
+  /// No description provided for @tradesInstrumentCreateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create new'**
+  String get tradesInstrumentCreateAction;
+
+  /// No description provided for @tradesInstrumentPickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select instrument'**
+  String get tradesInstrumentPickerTitle;
+
+  /// No description provided for @tradesInstrumentSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by symbol or name'**
+  String get tradesInstrumentSearchHint;
+
+  /// No description provided for @tradesInstrumentSearchEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No instruments found'**
+  String get tradesInstrumentSearchEmpty;
+
+  /// No description provided for @tradesInstrumentCreateDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create instrument'**
+  String get tradesInstrumentCreateDialogTitle;
+
+  /// No description provided for @tradesInstrumentCreateSymbolLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Symbol'**
+  String get tradesInstrumentCreateSymbolLabel;
 
   /// No description provided for @tradesEditTooltip.
   ///
@@ -545,6 +635,42 @@ abstract class AppLocalizations {
   /// **'Please enter a valid snapshot date.'**
   String get portfolioValidationMessage;
 
+  /// No description provided for @portfolioRequiredFieldValidationError.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required.'**
+  String get portfolioRequiredFieldValidationError;
+
+  /// No description provided for @portfolioDateValidationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid date (YYYY-MM-DD).'**
+  String get portfolioDateValidationError;
+
+  /// No description provided for @portfolioNumberValidationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid number.'**
+  String get portfolioNumberValidationError;
+
+  /// No description provided for @portfolioInvalidEnumValidationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a supported value.'**
+  String get portfolioInvalidEnumValidationError;
+
+  /// No description provided for @portfolioPositiveNumberValidationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a number greater than 0.'**
+  String get portfolioPositiveNumberValidationError;
+
+  /// No description provided for @portfolioUnitCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'VND'**
+  String get portfolioUnitCurrency;
+
   /// No description provided for @portfolioEquityLabel.
   ///
   /// In en, this message translates to:
@@ -647,6 +773,18 @@ abstract class AppLocalizations {
   /// **'Price'**
   String get portfolioQuotePriceLabel;
 
+  /// No description provided for @portfolioQuotePriceTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Price type'**
+  String get portfolioQuotePriceTypeLabel;
+
+  /// No description provided for @portfolioQuoteSourceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get portfolioQuoteSourceLabel;
+
   /// No description provided for @portfolioCashFormTitle.
   ///
   /// In en, this message translates to:
@@ -658,6 +796,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Amount'**
   String get portfolioCashAmountLabel;
+
+  /// No description provided for @portfolioCashMovementTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Movement type'**
+  String get portfolioCashMovementTypeLabel;
+
+  /// No description provided for @portfolioCashCurrencyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get portfolioCashCurrencyLabel;
 
   /// No description provided for @portfolioSnapshotsTitle.
   ///
@@ -875,11 +1025,29 @@ abstract class AppLocalizations {
   /// **'Risk percent per trade'**
   String get riskRulePercentLabel;
 
+  /// No description provided for @riskRulePercentUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'%'**
+  String get riskRulePercentUnit;
+
+  /// No description provided for @riskRulePercentRangeError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a value from 0 to 100.'**
+  String get riskRulePercentRangeError;
+
   /// No description provided for @riskRuleDailyLossLabel.
   ///
   /// In en, this message translates to:
   /// **'Max daily loss'**
   String get riskRuleDailyLossLabel;
+
+  /// No description provided for @riskRuleDailyLossUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'VND'**
+  String get riskRuleDailyLossUnit;
 
   /// No description provided for @riskRuleValidationMessage.
   ///
@@ -1534,6 +1702,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{module} module is coming soon.'**
   String modulePlaceholder(String module);
+
+  /// No description provided for @startupErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to start the app'**
+  String get startupErrorTitle;
+
+  /// No description provided for @startupErrorBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A startup dependency failed to initialize.'**
+  String get startupErrorBody;
+
+  /// No description provided for @startupErrorRetryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Please restart the app and try again.'**
+  String get startupErrorRetryHint;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

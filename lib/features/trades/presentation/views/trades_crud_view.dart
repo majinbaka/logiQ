@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:trading_diary/core/database/models/instrument_model.dart';
 import 'package:trading_diary/core/database/models/risk_check_model.dart';
 import 'package:trading_diary/core/database/models/trade_model.dart';
+import 'package:trading_diary/core/widgets/instrument_date_summary.dart';
 import 'package:trading_diary/core/database/models/trading_account_model.dart';
+import 'package:trading_diary/core/analytics/analytics_rebuild_service.dart';
 import 'package:trading_diary/core/widgets/trading_section_header.dart';
 import 'package:trading_diary/core/widgets/trading_state_view.dart';
 import 'package:trading_diary/core/widgets/trading_ui_tokens.dart';
@@ -11,8 +13,11 @@ import 'package:trading_diary/features/trades/presentation/widgets/components/tr
 import 'package:trading_diary/features/trades/presentation/widgets/components/trade_form_sheet.dart';
 import 'package:trading_diary/l10n/app_localizations.dart';
 import 'package:trading_diary/repositories/local/local_account_repository.dart';
+import 'package:trading_diary/repositories/local/local_analytics_repository.dart';
 import 'package:trading_diary/repositories/local/local_instrument_repository.dart';
+import 'package:trading_diary/repositories/local/local_insight_repository.dart';
 import 'package:trading_diary/repositories/local/local_risk_repository.dart';
+import 'package:trading_diary/repositories/local/local_strategy_repository.dart';
 import 'package:trading_diary/repositories/local/local_trade_repository.dart';
 
 class TradesCrudView extends StatefulWidget {
@@ -38,6 +43,11 @@ class _TradesCrudViewState extends State<TradesCrudView> {
           accountRepository: LocalAccountRepository(),
           instrumentRepository: LocalInstrumentRepository(),
           riskRepository: LocalRiskRepository(),
+          strategyRepository: LocalStrategyRepository(),
+          analyticsRebuildService: AnalyticsRebuildService(
+            analyticsRepository: LocalAnalyticsRepository(),
+            insightRepository: LocalInsightRepository(),
+          ),
         );
     _viewModel.loadTrades();
   }
@@ -74,8 +84,7 @@ class _TradesCrudViewState extends State<TradesCrudView> {
                   actionLabel: l10n.tradesRetry,
                   onAction: _viewModel.loadTrades,
                 )
-              else if (_viewModel.accounts.isEmpty ||
-                  _viewModel.instruments.isEmpty)
+              else if (_viewModel.accounts.isEmpty)
                 TradingStateView(
                   title: l10n.tradesMissingReferenceTitle,
                   message: l10n.tradesMissingReferenceBody,
@@ -94,6 +103,12 @@ class _TradesCrudViewState extends State<TradesCrudView> {
                   (trade) => _TradeListTile(
                     trade: trade,
                     riskCheck: _viewModel.riskCheckForTrade(trade.id),
+                    instrumentLabel:
+                        _findInstrument(trade.instrumentId)?.symbol ??
+                        trade.instrumentId,
+                    strategyLabel: _viewModel.strategyLabelForVersionId(
+                      trade.strategyVersionId,
+                    ),
                     onTap: () => _openTradeDetail(trade),
                     onEdit: () => _openTradeForm(existing: trade),
                     onDelete: () => _viewModel.deleteTrade(trade),
@@ -102,10 +117,7 @@ class _TradesCrudViewState extends State<TradesCrudView> {
             ],
           ),
           floatingActionButton: FloatingActionButton.extended(
-            onPressed:
-                _viewModel.accounts.isEmpty || _viewModel.instruments.isEmpty
-                ? null
-                : _openTradeForm,
+            onPressed: _viewModel.accounts.isEmpty ? null : _openTradeForm,
             icon: const Icon(Icons.add),
             label: Text(l10n.tradesAddButton),
           ),
@@ -145,18 +157,44 @@ class _TradesCrudViewState extends State<TradesCrudView> {
           existing: existing,
           accounts: _viewModel.accounts,
           instruments: _viewModel.instruments,
+          trades: _viewModel.trades,
+          onCreateInstrument: _viewModel.createInstrument,
+          strategyVersionOptions: _viewModel.strategyVersionOptions,
           formatDateInput: _formatDateInput,
         );
       },
     );
 
     if (result == null) return;
+    if (!mounted) return;
 
-    if (existing == null) {
-      await _viewModel.createTrade(
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      if (existing == null) {
+        await _viewModel.createTrade(
+          accountId: result.accountId,
+          instrumentId: result.instrumentId,
+          strategyVersionId: result.strategyVersionId,
+          direction: result.direction,
+          openedAt: result.openedAt,
+          quantityOpened: result.quantityOpened,
+          avgEntryPrice: result.avgEntryPrice,
+          avgExitPrice: result.avgExitPrice,
+          totalFee: result.totalFee,
+          totalTax: result.totalTax,
+          planNote: result.planNote,
+          reviewNote: result.reviewNote,
+        );
+        return;
+      }
+
+      await _viewModel.updateTrade(
+        trade: existing,
         accountId: result.accountId,
         instrumentId: result.instrumentId,
+        strategyVersionId: result.strategyVersionId,
         direction: result.direction,
+        status: result.status,
         openedAt: result.openedAt,
         quantityOpened: result.quantityOpened,
         avgEntryPrice: result.avgEntryPrice,
@@ -166,24 +204,25 @@ class _TradesCrudViewState extends State<TradesCrudView> {
         planNote: result.planNote,
         reviewNote: result.reviewNote,
       );
-      return;
+    } on TradeQuantityValidationException catch (error) {
+      if (!mounted) return;
+      final requested = _formatQuantity(error.requestedQuantity);
+      final available = _formatQuantity(error.availableQuantity);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            l10n.tradesSellQuantityExceedsAvailable(requested, available),
+          ),
+        ),
+      );
     }
+  }
 
-    await _viewModel.updateTrade(
-      trade: existing,
-      accountId: result.accountId,
-      instrumentId: result.instrumentId,
-      direction: result.direction,
-      status: result.status,
-      openedAt: result.openedAt,
-      quantityOpened: result.quantityOpened,
-      avgEntryPrice: result.avgEntryPrice,
-      avgExitPrice: result.avgExitPrice,
-      totalFee: result.totalFee,
-      totalTax: result.totalTax,
-      planNote: result.planNote,
-      reviewNote: result.reviewNote,
-    );
+  String _formatQuantity(double value) {
+    final formatted = value.toStringAsFixed(8);
+    return formatted
+        .replaceFirst(RegExp(r'0+$'), '')
+        .replaceFirst(RegExp(r'\.$'), '');
   }
 
   String _formatDateInput(DateTime dateTime) {
@@ -216,6 +255,8 @@ class _TradeListTile extends StatelessWidget {
   const _TradeListTile({
     required this.trade,
     required this.riskCheck,
+    required this.instrumentLabel,
+    required this.strategyLabel,
     required this.onTap,
     required this.onEdit,
     required this.onDelete,
@@ -223,6 +264,8 @@ class _TradeListTile extends StatelessWidget {
 
   final TradeModel trade;
   final RiskCheckModel? riskCheck;
+  final String instrumentLabel;
+  final String? strategyLabel;
   final VoidCallback onTap;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
@@ -233,7 +276,8 @@ class _TradeListTile extends StatelessWidget {
     final opened =
         trade.openedAt?.toLocal().toIso8601String().split('T').first ?? '-';
     final l10n = AppLocalizations.of(context)!;
-    final hasViolation = riskCheck?.exceededRisk == true ||
+    final hasViolation =
+        riskCheck?.exceededRisk == true ||
         riskCheck?.followedRiskRule == false ||
         ((riskCheck?.violationReason ?? '').trim().isNotEmpty);
     final riskStatus = hasViolation
@@ -247,9 +291,12 @@ class _TradeListTile extends StatelessWidget {
     return Card(
       child: ListTile(
         onTap: onTap,
-        title: Text('${trade.instrumentId} • ${trade.direction.toUpperCase()}'),
+        title: InstrumentDateSummary(
+          instrumentValue: instrumentLabel,
+          dateValue: opened,
+        ),
         subtitle: Text(
-          '${trade.status.toUpperCase()} • $opened\n${l10n.tradesRiskStatusLabel}: $riskStatus\n${l10n.tradesRiskReasonLabel}: $riskReason',
+          '${trade.direction.toUpperCase()} • ${trade.status.toUpperCase()}${strategyLabel == null ? '' : ' • $strategyLabel'}\n${l10n.tradesRiskStatusLabel}: $riskStatus\n${l10n.tradesRiskReasonLabel}: $riskReason',
         ),
         isThreeLine: true,
         trailing: Wrap(

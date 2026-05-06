@@ -24,6 +24,8 @@
   "tradesDetailTitle": "Trade detail",
   "tradesAccountLabel": "Account",
   "tradesInstrumentLabel": "Instrument ID",
+  "tradesStrategyVersionLabel": "Strategy version",
+  "tradesStrategyNoneOption": "No strategy",
   "tradesDirectionLabel": "Direction",
   "tradesDirectionBuy": "BUY",
   "tradesDirectionSell": "SELL",
@@ -44,11 +46,35 @@
   "tradesReviewPending": "Not connected yet",
   "tradesDateValidationError": "Please enter a valid opened date.",
   "tradesNumberValidationError": "Please enter a valid number.",
+  "tradesRequiredFieldValidationError": "This field is required.",
+  "tradesPositiveNumberValidationError": "Please enter a number greater than 0.",
+  "tradesNonNegativeNumberValidationError": "Please enter a non-negative number.",
+  "tradesSellQuantityExceedsAvailable": "Sell quantity {requested} exceeds available quantity {available}.",
+  "@tradesSellQuantityExceedsAvailable": {
+    "description": "Shown when sell quantity is greater than current holdings.",
+    "placeholders": {
+      "requested": {
+        "type": "String"
+      },
+      "available": {
+        "type": "String"
+      }
+    }
+  },
+  "tradesUnitQuantity": "shares",
+  "tradesUnitCurrency": "VND",
   "tradesMissingReferenceTitle": "Missing account or instrument",
   "tradesMissingReferenceBody": "Create account and instrument data before adding trades.",
   "tradesCancel": "Cancel",
   "tradesSave": "Save",
   "tradesValidationMessage": "Please enter a valid instrument and date.",
+  "tradesInstrumentSearchAction": "Search instrument",
+  "tradesInstrumentCreateAction": "Create new",
+  "tradesInstrumentPickerTitle": "Select instrument",
+  "tradesInstrumentSearchHint": "Search by symbol or name",
+  "tradesInstrumentSearchEmpty": "No instruments found",
+  "tradesInstrumentCreateDialogTitle": "Create instrument",
+  "tradesInstrumentCreateSymbolLabel": "Symbol",
   "tradesEditTooltip": "Edit trade",
   "tradesDeleteTooltip": "Delete trade",
   "tradesRiskStatusLabel": "Risk status",
@@ -78,6 +104,12 @@
   "portfolioCancel": "Cancel",
   "portfolioSave": "Save",
   "portfolioValidationMessage": "Please enter a valid snapshot date.",
+  "portfolioRequiredFieldValidationError": "This field is required.",
+  "portfolioDateValidationError": "Please enter a valid date (YYYY-MM-DD).",
+  "portfolioNumberValidationError": "Please enter a valid number.",
+  "portfolioInvalidEnumValidationError": "Please select a supported value.",
+  "portfolioPositiveNumberValidationError": "Please enter a number greater than 0.",
+  "portfolioUnitCurrency": "VND",
   "portfolioEquityLabel": "Equity",
   "portfolioEditTooltip": "Edit snapshot",
   "portfolioDeleteTooltip": "Delete snapshot",
@@ -95,8 +127,12 @@
   "portfolioQuoteFormTitle": "Quote input",
   "portfolioQuoteInstrumentLabel": "Instrument ID",
   "portfolioQuotePriceLabel": "Price",
+  "portfolioQuotePriceTypeLabel": "Price type",
+  "portfolioQuoteSourceLabel": "Source",
   "portfolioCashFormTitle": "Cash movement input",
   "portfolioCashAmountLabel": "Amount",
+  "portfolioCashMovementTypeLabel": "Movement type",
+  "portfolioCashCurrencyLabel": "Currency",
   "portfolioSnapshotsTitle": "Snapshots",
   "portfolioSnapshotDetailTitle": "Snapshot detail",
   "portfolioPositionsTitle": "Positions",
@@ -160,7 +196,10 @@
   "riskRuleCreateTitle": "Create risk rule",
   "riskRuleNameLabel": "Rule name",
   "riskRulePercentLabel": "Risk percent per trade",
+  "riskRulePercentUnit": "%",
+  "riskRulePercentRangeError": "Please enter a value from 0 to 100.",
   "riskRuleDailyLossLabel": "Max daily loss",
+  "riskRuleDailyLossUnit": "VND",
   "riskRuleValidationMessage": "Please enter a rule name and a valid effective date.",
   "riskChecksTitle": "Risk checks",
   "riskChecksEmptyState": "No risk checks yet.",
@@ -331,5 +370,8 @@
         "type": "String"
       }
     }
-  }
+  },
+  "startupErrorTitle": "Unable to start the app",
+  "startupErrorBody": "A startup dependency failed to initialize.",
+  "startupErrorRetryHint": "Please restart the app and try again."
 }
