@@ -387,6 +387,46 @@ class LocalPortfolioRepository implements PortfolioRepository {
 
   @override
   Future<void> deleteCashMovement(String movementId) async {
+    final raw = _cashMovementBox.get(movementId);
+    if (raw != null) {
+      final movement = CashMovementModel.fromMap(toDbJson(raw));
+      final status = movement.status.trim().toLowerCase();
+      if (status == 'completed') {
+        final now = _clock.now();
+        final balance = await _getOrCreateBalance(
+          movement.accountId,
+          movement.currency,
+          now,
+        );
+        final amount = _normalizeCashMovementAmount(
+          movementType: movement.movementType,
+          rawAmount: movement.amount,
+        );
+        final current = _toDouble(balance.currentCashBalance);
+        final reserved = _toDouble(balance.reservedCash);
+        final nextCurrent = current - amount;
+        final nextAvailable = nextCurrent - reserved;
+        await _upsertBalance(
+          balance,
+          currentCash: nextCurrent,
+          reservedCash: reserved,
+          availableCash: nextAvailable,
+          buyingPower: nextAvailable,
+          updatedAt: now,
+        );
+        await _appendActivityLog(
+          accountId: movement.accountId,
+          action: 'cash_movement_deleted',
+          beforeValue: _fmt(current),
+          afterValue: _fmt(nextCurrent),
+          reason: movement.movementType,
+          source: 'cash_movement',
+          correlationId: movement.id,
+          actorId: 'system',
+          at: now,
+        );
+      }
+    }
     await _cashMovementBox.delete(movementId);
     await deleteCashLedger(movementId);
   }
@@ -448,6 +488,27 @@ class LocalPortfolioRepository implements PortfolioRepository {
         .toList(growable: false);
     items.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return items.take(limit).toList(growable: false);
+  }
+
+  @override
+  Future<void> recordBrokerReconciliation({
+    required String accountId,
+    required String currency,
+    required DateTime at,
+    String actorId = 'system',
+    String? note,
+  }) {
+    return _appendActivityLog(
+      accountId: accountId,
+      action: 'broker_reconciliation_completed',
+      beforeValue: '0',
+      afterValue: '0',
+      reason: note ?? 'broker_reconciliation_completed',
+      source: 'broker_reconciliation',
+      correlationId: 'reconcile_${accountId}_${at.microsecondsSinceEpoch}',
+      actorId: actorId,
+      at: at,
+    );
   }
 
   @override

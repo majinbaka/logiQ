@@ -52,9 +52,45 @@
   "cashCreateConfirmCurrentAfter": "Current cash after create",
   "cashCreateConfirmPendingAfter": "Unsettled funds after create",
   "cashSubmitFailed": "Cash request failed. Please validate input.",
+  "cashSubmitRetry": "Cash request failed. Please try again.",
   "cashInsufficientAvailable": "Insufficient available cash.",
+  "cashValidationFailed": "Invalid cash request. Please review your input.",
+  "cashPendingInflow": "Pending Inflow",
+  "cashPendingOutflow": "Pending Outflow",
+  "cashNetPendingCash": "Net Pending Cash",
+  "cashExpectedAfterCompletion": "Expected Cash After Completion",
+  "cashBalanceUpdateAfterCompletion": "Balance updates after completion/broker confirmation.",
   "cashType": "Type",
   "cashStatus": "Status",
+  "cashTypeDeposit": "Deposit",
+  "cashTypeWithdrawal": "Withdrawal",
+  "cashTypeInitialDeposit": "Initial Deposit",
+  "cashTypeDividend": "Dividend",
+  "cashTypeFee": "Fee",
+  "cashTypeFeeAdjustment": "Fee Adjustment",
+  "cashTypeBrokerFee": "Broker Fee",
+  "cashTypeCommission": "Commission",
+  "cashTypeAdjustment": "Adjustment",
+  "cashTypeUnknown": "Unknown ({raw})",
+  "@cashTypeUnknown": {
+    "placeholders": {
+      "raw": {
+        "type": "String"
+      }
+    }
+  },
+  "cashStatusPending": "Pending",
+  "cashStatusCompleted": "Completed",
+  "cashStatusFailed": "Failed",
+  "cashStatusCancelled": "Cancelled",
+  "cashStatusUnknown": "Unknown ({raw})",
+  "@cashStatusUnknown": {
+    "placeholders": {
+      "raw": {
+        "type": "String"
+      }
+    }
+  },
   "cashBrokerReference": "Broker reference",
   "cashCreatedAt": "Created at",
   "cashSettledAt": "Settled at",

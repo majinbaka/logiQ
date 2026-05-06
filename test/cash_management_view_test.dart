@@ -70,6 +70,85 @@ void main() {
 
     expect(repository.deletedMovementId, 'cm_1');
   });
+
+  testWidgets('pending deposit preview shows pending inflow and expected cash', (
+    tester,
+  ) async {
+    await _pumpCash(
+      tester,
+      portfolioRepository: _FakePortfolioRepository(availableCash: '0'),
+    );
+
+    await tester.tap(find.byKey(const Key('cash_action_deposit')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const Key('cash_deposit_amount')), '10000');
+    await tester.tap(find.byKey(const Key('cash_deposit_save')));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Pending Inflow: +10000.00'), findsOneWidget);
+    expect(find.textContaining('Pending Outflow: -0.00'), findsOneWidget);
+    expect(find.textContaining('Expected Cash After Completion: 10000.00'), findsOneWidget);
+  });
+
+  testWidgets('pending withdrawal preview shows pending outflow and expected cash', (
+    tester,
+  ) async {
+    await _pumpCash(
+      tester,
+      portfolioRepository: _FakePortfolioRepository(availableCash: '10000'),
+    );
+
+    await tester.tap(find.byKey(const Key('cash_action_withdraw')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const Key('cash_withdraw_amount')), '2000');
+    await tester.tap(find.byKey(const Key('cash_withdraw_save')));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Pending Inflow: +0.00'), findsOneWidget);
+    expect(find.textContaining('Pending Outflow: -2000.00'), findsOneWidget);
+    expect(find.textContaining('Expected Cash After Completion: 8000.00'), findsOneWidget);
+  });
+
+  testWidgets('withdraw repository failure shows retry message', (tester) async {
+    await _pumpCash(
+      tester,
+      portfolioRepository: _FakePortfolioRepository(
+        availableCash: '10000',
+        throwOnUpsert: true,
+      ),
+    );
+
+    await tester.tap(find.byKey(const Key('cash_action_withdraw')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const Key('cash_withdraw_amount')), '1000');
+    await tester.tap(find.byKey(const Key('cash_withdraw_save')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('cash_create_confirm_submit')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Cash request failed. Please try again.'), findsOneWidget);
+  });
+
+  testWidgets('transaction list renders localized type and status', (tester) async {
+    final repository = _FakePortfolioRepository(
+      movements: [
+        CashMovementModel(
+          id: 'cm_2',
+          accountId: 'acc_1',
+          movementDate: DateTime.utc(2026, 5, 1),
+          movementType: 'fee_adjustment',
+          amount: '100',
+          currency: 'USD',
+          status: 'pending',
+          createdAt: DateTime.utc(2026, 5, 1),
+        ),
+      ],
+    );
+    await _pumpCash(tester, portfolioRepository: repository);
+
+    expect(find.textContaining('Fee Adjustment • 100 USD'), findsOneWidget);
+    expect(find.textContaining('Pending • '), findsOneWidget);
+  });
 }
 
 Future<void> _pumpCash(
@@ -119,10 +198,12 @@ class _FakeAccountRepository implements AccountRepository {
 class _FakePortfolioRepository implements PortfolioRepository {
   _FakePortfolioRepository({
     this.availableCash = '10000',
+    this.throwOnUpsert = false,
     List<CashMovementModel>? movements,
   }) : _movements = movements ?? [];
 
   final String availableCash;
+  final bool throwOnUpsert;
   final List<CashMovementModel> _movements;
   String? deletedMovementId;
 
@@ -160,6 +241,15 @@ class _FakePortfolioRepository implements PortfolioRepository {
   }
 
   @override
+  Future<void> recordBrokerReconciliation({
+    required String accountId,
+    required String currency,
+    required DateTime at,
+    String actorId = 'system',
+    String? note,
+  }) async {}
+
+  @override
   Future<List<CashLedgerModel>> listCashLedgerEntries(
     String accountId, {
     int limit = 20,
@@ -184,7 +274,12 @@ class _FakePortfolioRepository implements PortfolioRepository {
   }
 
   @override
-  Future<void> upsertCashMovement(CashMovementModel movement) async {}
+  Future<void> upsertCashMovement(CashMovementModel movement) async {
+    if (throwOnUpsert) {
+      throw Exception('repository_failure');
+    }
+    _movements.add(movement);
+  }
 
   @override
   Future<void> deleteCashMovement(String movementId) async {

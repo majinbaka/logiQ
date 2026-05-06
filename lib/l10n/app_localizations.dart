@@ -389,11 +389,53 @@ abstract class AppLocalizations {
   /// **'Cash request failed. Please validate input.'**
   String get cashSubmitFailed;
 
+  /// No description provided for @cashSubmitRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash request failed. Please try again.'**
+  String get cashSubmitRetry;
+
   /// No description provided for @cashInsufficientAvailable.
   ///
   /// In en, this message translates to:
   /// **'Insufficient available cash.'**
   String get cashInsufficientAvailable;
+
+  /// No description provided for @cashValidationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid cash request. Please review your input.'**
+  String get cashValidationFailed;
+
+  /// No description provided for @cashPendingInflow.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Inflow'**
+  String get cashPendingInflow;
+
+  /// No description provided for @cashPendingOutflow.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Outflow'**
+  String get cashPendingOutflow;
+
+  /// No description provided for @cashNetPendingCash.
+  ///
+  /// In en, this message translates to:
+  /// **'Net Pending Cash'**
+  String get cashNetPendingCash;
+
+  /// No description provided for @cashExpectedAfterCompletion.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected Cash After Completion'**
+  String get cashExpectedAfterCompletion;
+
+  /// No description provided for @cashBalanceUpdateAfterCompletion.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance updates after completion/broker confirmation.'**
+  String get cashBalanceUpdateAfterCompletion;
 
   /// No description provided for @cashType.
   ///
@@ -406,6 +448,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Status'**
   String get cashStatus;
+
+  /// No description provided for @cashTypeDeposit.
+  ///
+  /// In en, this message translates to:
+  /// **'Deposit'**
+  String get cashTypeDeposit;
+
+  /// No description provided for @cashTypeWithdrawal.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdrawal'**
+  String get cashTypeWithdrawal;
+
+  /// No description provided for @cashTypeInitialDeposit.
+  ///
+  /// In en, this message translates to:
+  /// **'Initial Deposit'**
+  String get cashTypeInitialDeposit;
+
+  /// No description provided for @cashTypeDividend.
+  ///
+  /// In en, this message translates to:
+  /// **'Dividend'**
+  String get cashTypeDividend;
+
+  /// No description provided for @cashTypeFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Fee'**
+  String get cashTypeFee;
+
+  /// No description provided for @cashTypeFeeAdjustment.
+  ///
+  /// In en, this message translates to:
+  /// **'Fee Adjustment'**
+  String get cashTypeFeeAdjustment;
+
+  /// No description provided for @cashTypeBrokerFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Broker Fee'**
+  String get cashTypeBrokerFee;
+
+  /// No description provided for @cashTypeCommission.
+  ///
+  /// In en, this message translates to:
+  /// **'Commission'**
+  String get cashTypeCommission;
+
+  /// No description provided for @cashTypeAdjustment.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjustment'**
+  String get cashTypeAdjustment;
+
+  /// No description provided for @cashTypeUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown ({raw})'**
+  String cashTypeUnknown(String raw);
+
+  /// No description provided for @cashStatusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get cashStatusPending;
+
+  /// No description provided for @cashStatusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get cashStatusCompleted;
+
+  /// No description provided for @cashStatusFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get cashStatusFailed;
+
+  /// No description provided for @cashStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get cashStatusCancelled;
+
+  /// No description provided for @cashStatusUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown ({raw})'**
+  String cashStatusUnknown(String raw);
 
   /// No description provided for @cashBrokerReference.
   ///

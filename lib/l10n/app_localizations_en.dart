@@ -156,13 +156,83 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cashSubmitFailed => 'Cash request failed. Please validate input.';
 
   @override
+  String get cashSubmitRetry => 'Cash request failed. Please try again.';
+
+  @override
   String get cashInsufficientAvailable => 'Insufficient available cash.';
+
+  @override
+  String get cashValidationFailed => 'Invalid cash request. Please review your input.';
+
+  @override
+  String get cashPendingInflow => 'Pending Inflow';
+
+  @override
+  String get cashPendingOutflow => 'Pending Outflow';
+
+  @override
+  String get cashNetPendingCash => 'Net Pending Cash';
+
+  @override
+  String get cashExpectedAfterCompletion => 'Expected Cash After Completion';
+
+  @override
+  String get cashBalanceUpdateAfterCompletion => 'Balance updates after completion/broker confirmation.';
 
   @override
   String get cashType => 'Type';
 
   @override
   String get cashStatus => 'Status';
+
+  @override
+  String get cashTypeDeposit => 'Deposit';
+
+  @override
+  String get cashTypeWithdrawal => 'Withdrawal';
+
+  @override
+  String get cashTypeInitialDeposit => 'Initial Deposit';
+
+  @override
+  String get cashTypeDividend => 'Dividend';
+
+  @override
+  String get cashTypeFee => 'Fee';
+
+  @override
+  String get cashTypeFeeAdjustment => 'Fee Adjustment';
+
+  @override
+  String get cashTypeBrokerFee => 'Broker Fee';
+
+  @override
+  String get cashTypeCommission => 'Commission';
+
+  @override
+  String get cashTypeAdjustment => 'Adjustment';
+
+  @override
+  String cashTypeUnknown(String raw) {
+    return 'Unknown ($raw)';
+  }
+
+  @override
+  String get cashStatusPending => 'Pending';
+
+  @override
+  String get cashStatusCompleted => 'Completed';
+
+  @override
+  String get cashStatusFailed => 'Failed';
+
+  @override
+  String get cashStatusCancelled => 'Cancelled';
+
+  @override
+  String cashStatusUnknown(String raw) {
+    return 'Unknown ($raw)';
+  }
 
   @override
   String get cashBrokerReference => 'Broker reference';

@@ -808,4 +808,13 @@ class _FakePortfolioRepository implements PortfolioRepository {
   }) async {
     return const [];
   }
+
+  @override
+  Future<void> recordBrokerReconciliation({
+    required String accountId,
+    required String currency,
+    required DateTime at,
+    String actorId = 'system',
+    String? note,
+  }) async {}
 }

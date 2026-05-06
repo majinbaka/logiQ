@@ -43,11 +43,14 @@ class CashManagementViewModel extends ChangeNotifier {
   CashMovementFilter get filter => _filter;
 
   List<CashMovementModel> get filteredMovements {
-    if (_filter == CashMovementFilter.all) return _movements;
-    return _movements
+    final movements = _movements
+        .where((item) => !_isLegacyReconciliationMovement(item))
+        .toList(growable: false);
+    if (_filter == CashMovementFilter.all) return movements;
+    return movements
         .where((item) {
           final type = item.movementType.trim().toLowerCase();
-          return type == _filter.name;
+          return _matchesFilter(type, _filter);
         })
         .toList(growable: false);
   }
@@ -179,33 +182,36 @@ class CashManagementViewModel extends ChangeNotifier {
   Future<void> reconcileNow() async {
     await _runSubmit(() async {
       final now = DateTime.now().toUtc();
-      await _repository.upsertCashMovement(
-        CashMovementModel(
-          id: 'cm_reconcile_${accountId}_${now.microsecondsSinceEpoch}',
-          accountId: accountId,
-          movementDate: now,
-          movementType: 'fee_adjustment',
-          amount: '0',
-          currency: _currency,
-          note: 'broker_reconciliation_completed',
-          status: 'completed',
-          idempotencyKey:
-              'reconcile_${accountId}_${now.microsecondsSinceEpoch}',
-          brokerReference: 'manual_reconcile',
-          createdBy: 'system',
-          settledAt: now,
-          createdAt: now,
-        ),
+      await _repository.recordBrokerReconciliation(
+        accountId: accountId,
+        currency: _currency,
+        at: now,
       );
       _lastReconciledAt = now;
       await load();
     });
   }
 
-  double totalUnsettledFunds() {
+  double pendingInflow() {
     return _movements
         .where((m) => m.status.toLowerCase() == 'pending')
-        .fold<double>(0, (sum, item) => sum + _toDouble(item.amount));
+        .where((m) => _signedPendingAmount(m) > 0)
+        .fold<double>(0, (sum, item) => sum + _signedPendingAmount(item));
+  }
+
+  double pendingOutflow() {
+    return _movements
+        .where((m) => m.status.toLowerCase() == 'pending')
+        .where((m) => _signedPendingAmount(m) < 0)
+        .fold<double>(0, (sum, item) => sum + _signedPendingAmount(item).abs());
+  }
+
+  double totalUnsettledFunds() => netPendingCash();
+
+  double netPendingCash() {
+    return _movements
+        .where((m) => m.status.toLowerCase() == 'pending')
+        .fold<double>(0, (sum, item) => sum + _signedPendingAmount(item));
   }
 
   double leverageUsage() {
@@ -227,4 +233,38 @@ class CashManagementViewModel extends ChangeNotifier {
   }
 
   double _toDouble(String? value) => double.tryParse(value ?? '0') ?? 0;
+
+  bool _matchesFilter(String movementType, CashMovementFilter filter) {
+    switch (filter) {
+      case CashMovementFilter.all:
+        return true;
+      case CashMovementFilter.deposit:
+        return movementType == 'deposit' || movementType == 'initial_deposit';
+      case CashMovementFilter.withdrawal:
+        return movementType == 'withdrawal';
+      case CashMovementFilter.fee:
+        return movementType == 'fee' ||
+            movementType == 'fee_adjustment' ||
+            movementType == 'broker_fee' ||
+            movementType == 'commission';
+      case CashMovementFilter.dividend:
+        return movementType == 'dividend';
+    }
+  }
+
+  bool _isLegacyReconciliationMovement(CashMovementModel movement) {
+    return movement.status.trim().toLowerCase() == 'completed' &&
+        movement.note == 'broker_reconciliation_completed' &&
+        _toDouble(movement.amount) == 0;
+  }
+
+  double _signedPendingAmount(CashMovementModel movement) {
+    if (_isLegacyReconciliationMovement(movement)) return 0;
+    final amount = _toDouble(movement.amount);
+    final movementType = movement.movementType.trim().toLowerCase();
+    if (movementType == 'withdrawal') {
+      return -amount;
+    }
+    return amount;
+  }
 }

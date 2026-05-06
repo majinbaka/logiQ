@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logiq/core/database/models/cash_movement_model.dart';
 import 'package:logiq/core/database/models/portfolio_input_enums.dart';
+import 'package:logiq/core/fund/cash_request_validator.dart';
 import 'package:logiq/core/widgets/formatted_number_input.dart';
 import 'package:logiq/core/widgets/trading_section_header.dart';
 import 'package:logiq/core/widgets/trading_state_view.dart';
@@ -118,6 +119,10 @@ class _CashManagementViewState extends State<CashManagementView> {
                 _metricCard(
                   l10n.cashUnsettledFunds,
                   _viewModel.totalUnsettledFunds().toStringAsFixed(2),
+                  tooltip:
+                      '${l10n.cashPendingInflow}: +${_viewModel.pendingInflow().toStringAsFixed(2)}\n'
+                      '${l10n.cashPendingOutflow}: -${_viewModel.pendingOutflow().toStringAsFixed(2)}\n'
+                      '${l10n.cashNetPendingCash}: ${_viewModel.netPendingCash().toStringAsFixed(2)}',
                 ),
               ],
             ),
@@ -198,10 +203,10 @@ class _CashManagementViewState extends State<CashManagementView> {
                 return Card(
                   child: ListTile(
                     title: Text(
-                      '${movement.movementType} • ${movement.amount} ${movement.currency}',
+                      '${_displayMovementType(movement.movementType)} • ${movement.amount} ${movement.currency}',
                     ),
                     subtitle: Text(
-                      '${movement.status} • ${_fmtDateTime(movement.movementDate)}',
+                      '${_displayMovementStatus(movement.status)} • ${_fmtDateTime(movement.movementDate)}',
                     ),
                     trailing: Wrap(
                       spacing: TradingUiSpacing.xs,
@@ -284,21 +289,22 @@ class _CashManagementViewState extends State<CashManagementView> {
     );
   }
 
-  Widget _metricCard(String label, String value) {
+  Widget _metricCard(String label, String value, {String? tooltip}) {
+    final content = Padding(
+      padding: const EdgeInsets.all(TradingUiSpacing.sm),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: Theme.of(context).textTheme.labelMedium),
+          const SizedBox(height: TradingUiSpacing.xs),
+          Text(value, style: Theme.of(context).textTheme.titleMedium),
+        ],
+      ),
+    );
     return SizedBox(
       width: 180,
       child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(TradingUiSpacing.sm),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(label, style: Theme.of(context).textTheme.labelMedium),
-              const SizedBox(height: TradingUiSpacing.xs),
-              Text(value, style: Theme.of(context).textTheme.titleMedium),
-            ],
-          ),
-        ),
+        child: tooltip == null ? content : Tooltip(message: tooltip, child: content),
       ),
     );
   }
@@ -345,14 +351,14 @@ class _CashManagementViewState extends State<CashManagementView> {
                 key: const Key('cash_deposit_type'),
                 initialValue: _depositType,
                 decoration: InputDecoration(labelText: l10n.cashDepositType),
-                items: const [
+                items: [
                   DropdownMenuItem(
                     value: CashMovementType.initialDeposit,
-                    child: Text('initial_deposit'),
+                    child: Text(_displayMovementType('initial_deposit')),
                   ),
                   DropdownMenuItem(
                     value: CashMovementType.deposit,
-                    child: Text('deposit'),
+                    child: Text(_displayMovementType('deposit')),
                   ),
                 ],
                 onChanged: (value) {
@@ -526,11 +532,20 @@ class _CashManagementViewState extends State<CashManagementView> {
       _withdrawNoteController.clear();
       if (!mounted) return;
       setState(() => _isWithdrawExpanded = false);
-    } catch (_) {
+    } on CashValidationException catch (error) {
+      final message = error.code == 'insufficient_available_cash'
+          ? l10n.cashInsufficientAvailable
+          : l10n.cashValidationFailed;
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.cashInsufficientAvailable)));
+      ).showSnackBar(SnackBar(content: Text(message)));
+    } catch (error, stackTrace) {
+      debugPrint('createWithdrawalPending failed: $error\n$stackTrace');
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.cashSubmitRetry)));
     }
   }
 
@@ -558,11 +573,15 @@ class _CashManagementViewState extends State<CashManagementView> {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: TradingUiSpacing.sm),
-              Text('${l10n.cashType}: ${movement.movementType}'),
+              Text(
+                '${l10n.cashType}: ${_displayMovementType(movement.movementType)}',
+              ),
               Text(
                 '${l10n.cashAmount}: ${movement.amount} ${movement.currency}',
               ),
-              Text('${l10n.cashStatus}: ${movement.status}'),
+              Text(
+                '${l10n.cashStatus}: ${_displayMovementStatus(movement.status)}',
+              ),
               Text(
                 '${l10n.cashBrokerReference}: ${movement.brokerReference ?? '-'}',
               ),
@@ -593,12 +612,11 @@ class _CashManagementViewState extends State<CashManagementView> {
     final value = _toDouble(amount);
     final currentCash = _toDouble(_viewModel.balance?.currentCashBalance);
     final availableCash = _toDouble(_viewModel.balance?.availableCash);
-    final unsettled = _viewModel.totalUnsettledFunds();
-    final nextCurrentCash = isDeposit ? currentCash + value : currentCash;
-    final nextAvailableCash = isDeposit
-        ? availableCash
-        : availableCash - value;
-    final nextUnsettled = unsettled + value;
+    final nextPendingInflow = _viewModel.pendingInflow() + (isDeposit ? value : 0);
+    final nextPendingOutflow = _viewModel.pendingOutflow() + (isDeposit ? 0 : value);
+    final expectedAfterCompletion = isDeposit
+        ? currentCash + value
+        : currentCash - value;
 
     final ok = await showDialog<bool>(
       context: context,
@@ -612,13 +630,18 @@ class _CashManagementViewState extends State<CashManagementView> {
               Text('${l10n.cashCreateConfirmAmount}: $amount ${_viewModel.currency}'),
               const SizedBox(height: TradingUiSpacing.xs),
               Text('${l10n.cashCurrentCash}: ${currentCash.toStringAsFixed(2)}'),
-              Text('${l10n.cashCreateConfirmCurrentAfter}: ${nextCurrentCash.toStringAsFixed(2)}'),
+              Text(
+                '${l10n.cashPendingInflow}: +${nextPendingInflow.toStringAsFixed(2)}',
+              ),
+              Text(
+                '${l10n.cashPendingOutflow}: -${nextPendingOutflow.toStringAsFixed(2)}',
+              ),
+              Text(
+                '${l10n.cashExpectedAfterCompletion}: ${expectedAfterCompletion.toStringAsFixed(2)}',
+              ),
               const SizedBox(height: TradingUiSpacing.xs),
               Text('${l10n.cashAvailableCash}: ${availableCash.toStringAsFixed(2)}'),
-              Text('${l10n.cashCreateConfirmAvailableAfter}: ${nextAvailableCash.toStringAsFixed(2)}'),
-              const SizedBox(height: TradingUiSpacing.xs),
-              Text('${l10n.cashUnsettledFunds}: ${unsettled.toStringAsFixed(2)}'),
-              Text('${l10n.cashCreateConfirmPendingAfter}: ${nextUnsettled.toStringAsFixed(2)}'),
+              Text(l10n.cashBalanceUpdateAfterCompletion),
             ],
           ),
           actions: [
@@ -639,6 +662,49 @@ class _CashManagementViewState extends State<CashManagementView> {
   }
 
   double _toDouble(String? value) => double.tryParse(value ?? '0') ?? 0;
+
+  String _displayMovementType(String raw) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (raw.trim().toLowerCase()) {
+      case 'deposit':
+        return l10n.cashTypeDeposit;
+      case 'withdrawal':
+        return l10n.cashTypeWithdrawal;
+      case 'initial_deposit':
+        return l10n.cashTypeInitialDeposit;
+      case 'dividend':
+        return l10n.cashTypeDividend;
+      case 'fee':
+        return l10n.cashTypeFee;
+      case 'fee_adjustment':
+        return l10n.cashTypeFeeAdjustment;
+      case 'broker_fee':
+        return l10n.cashTypeBrokerFee;
+      case 'commission':
+        return l10n.cashTypeCommission;
+      case 'adjustment':
+        return l10n.cashTypeAdjustment;
+      default:
+        return l10n.cashTypeUnknown(raw);
+    }
+  }
+
+  String _displayMovementStatus(String raw) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (raw.trim().toLowerCase()) {
+      case 'pending':
+        return l10n.cashStatusPending;
+      case 'completed':
+        return l10n.cashStatusCompleted;
+      case 'failed':
+        return l10n.cashStatusFailed;
+      case 'cancelled':
+      case 'canceled':
+        return l10n.cashStatusCancelled;
+      default:
+        return l10n.cashStatusUnknown(raw);
+    }
+  }
 
   String _fmtDateTime(DateTime value) {
     final local = value.toLocal();

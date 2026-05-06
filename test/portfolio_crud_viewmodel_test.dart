@@ -252,6 +252,15 @@ class _FakePortfolioRepository implements PortfolioRepository {
   }
 
   @override
+  Future<void> recordBrokerReconciliation({
+    required String accountId,
+    required String currency,
+    required DateTime at,
+    String actorId = 'system',
+    String? note,
+  }) async {}
+
+  @override
   Future<void> realizeTradeCloseProceeds({
     required String accountId,
     required String currency,

@@ -54,6 +54,13 @@ abstract class PortfolioRepository {
     String accountId, {
     int limit = 50,
   });
+  Future<void> recordBrokerReconciliation({
+    required String accountId,
+    required String currency,
+    required DateTime at,
+    String actorId,
+    String? note,
+  });
   Future<AccountBalanceModel?> getAccountBalance(
     String accountId, {
     String? currency,

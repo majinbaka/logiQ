@@ -49,9 +49,45 @@
   "cashCreateConfirmCurrentAfter": "Tiền hiện tại sau khi tạo",
   "cashCreateConfirmPendingAfter": "Tiền chưa thanh toán sau khi tạo",
   "cashSubmitFailed": "Tạo yêu cầu tiền thất bại. Vui lòng kiểm tra dữ liệu.",
+  "cashSubmitRetry": "Tạo yêu cầu tiền thất bại. Vui lòng thử lại.",
   "cashInsufficientAvailable": "Không đủ tiền khả dụng.",
+  "cashValidationFailed": "Yêu cầu tiền không hợp lệ. Vui lòng kiểm tra dữ liệu.",
+  "cashPendingInflow": "Tiền vào chờ xử lý",
+  "cashPendingOutflow": "Tiền ra chờ xử lý",
+  "cashNetPendingCash": "Tiền chờ xử lý ròng",
+  "cashExpectedAfterCompletion": "Tiền dự kiến sau khi hoàn tất",
+  "cashBalanceUpdateAfterCompletion": "Số dư chỉ cập nhật sau khi hoàn tất/xác nhận từ broker.",
   "cashType": "Loại",
   "cashStatus": "Trạng thái",
+  "cashTypeDeposit": "Nạp tiền",
+  "cashTypeWithdrawal": "Rút tiền",
+  "cashTypeInitialDeposit": "Nạp vốn ban đầu",
+  "cashTypeDividend": "Cổ tức",
+  "cashTypeFee": "Phí",
+  "cashTypeFeeAdjustment": "Điều chỉnh phí",
+  "cashTypeBrokerFee": "Phí broker",
+  "cashTypeCommission": "Hoa hồng",
+  "cashTypeAdjustment": "Điều chỉnh",
+  "cashTypeUnknown": "Không xác định ({raw})",
+  "@cashTypeUnknown": {
+    "placeholders": {
+      "raw": {
+        "type": "String"
+      }
+    }
+  },
+  "cashStatusPending": "Đang chờ",
+  "cashStatusCompleted": "Hoàn tất",
+  "cashStatusFailed": "Thất bại",
+  "cashStatusCancelled": "Đã hủy",
+  "cashStatusUnknown": "Không xác định ({raw})",
+  "@cashStatusUnknown": {
+    "placeholders": {
+      "raw": {
+        "type": "String"
+      }
+    }
+  },
   "cashBrokerReference": "Mã broker",
   "cashCreatedAt": "Thời điểm tạo",
   "cashSettledAt": "Thời điểm settle",

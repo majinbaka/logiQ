@@ -156,13 +156,83 @@ class AppLocalizationsVi extends AppLocalizations {
   String get cashSubmitFailed => 'Tạo yêu cầu tiền thất bại. Vui lòng kiểm tra dữ liệu.';
 
   @override
+  String get cashSubmitRetry => 'Tạo yêu cầu tiền thất bại. Vui lòng thử lại.';
+
+  @override
   String get cashInsufficientAvailable => 'Không đủ tiền khả dụng.';
+
+  @override
+  String get cashValidationFailed => 'Yêu cầu tiền không hợp lệ. Vui lòng kiểm tra dữ liệu.';
+
+  @override
+  String get cashPendingInflow => 'Tiền vào chờ xử lý';
+
+  @override
+  String get cashPendingOutflow => 'Tiền ra chờ xử lý';
+
+  @override
+  String get cashNetPendingCash => 'Tiền chờ xử lý ròng';
+
+  @override
+  String get cashExpectedAfterCompletion => 'Tiền dự kiến sau khi hoàn tất';
+
+  @override
+  String get cashBalanceUpdateAfterCompletion => 'Số dư chỉ cập nhật sau khi hoàn tất/xác nhận từ broker.';
 
   @override
   String get cashType => 'Loại';
 
   @override
   String get cashStatus => 'Trạng thái';
+
+  @override
+  String get cashTypeDeposit => 'Nạp tiền';
+
+  @override
+  String get cashTypeWithdrawal => 'Rút tiền';
+
+  @override
+  String get cashTypeInitialDeposit => 'Nạp vốn ban đầu';
+
+  @override
+  String get cashTypeDividend => 'Cổ tức';
+
+  @override
+  String get cashTypeFee => 'Phí';
+
+  @override
+  String get cashTypeFeeAdjustment => 'Điều chỉnh phí';
+
+  @override
+  String get cashTypeBrokerFee => 'Phí broker';
+
+  @override
+  String get cashTypeCommission => 'Hoa hồng';
+
+  @override
+  String get cashTypeAdjustment => 'Điều chỉnh';
+
+  @override
+  String cashTypeUnknown(String raw) {
+    return 'Không xác định ($raw)';
+  }
+
+  @override
+  String get cashStatusPending => 'Đang chờ';
+
+  @override
+  String get cashStatusCompleted => 'Hoàn tất';
+
+  @override
+  String get cashStatusFailed => 'Thất bại';
+
+  @override
+  String get cashStatusCancelled => 'Đã hủy';
+
+  @override
+  String cashStatusUnknown(String raw) {
+    return 'Không xác định ($raw)';
+  }
 
   @override
   String get cashBrokerReference => 'Mã broker';
