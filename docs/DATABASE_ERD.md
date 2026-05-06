@@ -555,25 +555,27 @@ Pham vi doi chieu:
 - [ ] `RISK_RULE.max_weekly_loss_amount`
 - [ ] `RISK_RULE.max_monthly_loss_amount`
 - [ ] `RISK_RULE.stop_trading_rule`
-- [ ] `TRADE_FILL.order_id`
+- [x] `TRADE_FILL.order_id`
 - [ ] `TRADE_FILL.gross_value`
-- [ ] `TRADE_CONTEXT.trend_direction`
-- [ ] `TRADE_CONTEXT.volatility_level`
-- [ ] `TRADE_CONTEXT.timeframe`
-- [ ] `TRADE_CONTEXT.setup_quality_score`
-- [ ] `TRADE_REVIEW.exit_reason`
-- [ ] `TRADE_REVIEW.mistake_summary`
-- [ ] `TRADE_REVIEW.lesson`
-- [ ] `TRADE_REVIEW.self_review`
-- [ ] `TRADE_PLAN.entry_zone_low`
-- [ ] `TRADE_PLAN.entry_zone_high`
-- [ ] `TRADE_PLAN.stop_loss_price`
-- [ ] `TRADE_PLAN.confidence_percent`
-- [ ] `TRADE_PLAN.invalidation_note`
+- [x] `TRADE_CONTEXT.trend_direction`
+- [x] `TRADE_CONTEXT.volatility_level`
+- [x] `TRADE_CONTEXT.timeframe`
+- [x] `TRADE_CONTEXT.setup_quality_score`
+- [x] `TRADE_REVIEW.exit_reason`
+- [x] `TRADE_REVIEW.mistake_summary`
+- [x] `TRADE_REVIEW.lesson`
+- [x] `TRADE_REVIEW.self_review`
+- [x] `TRADE_PLAN.entry_zone_low`
+- [x] `TRADE_PLAN.entry_zone_high`
+- [x] `TRADE_PLAN.stop_loss_price`
+- [x] `TRADE_PLAN.confidence_percent`
+- [x] `TRADE_PLAN.invalidation_note`
 
 Ghi chu:
 
 - Danh sach tren la "chua dung trong luong nghiep vu chinh" (UI/VM/Repository runtime),
   khong phai "thieu trong model map".
+- Cac muc da tick [x] trong dot nay da co write/read path o repository runtime;
+  UI nghiep vu chi tiet cho chung co the tiep tuc bo sung sau.
 - Cac field analytics co the duoc phep chua hien thi tren UI ngay, mien la build/rebuild
   analytics van hoat dong tu du lieu goc.
