@@ -1,3 +1,3 @@
-# trading_diary
+# logiq
 
 A new Flutter project.

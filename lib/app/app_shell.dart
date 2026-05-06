@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:trading_diary/features/daily_journal/presentation/views/daily_journal_view.dart';
-import 'package:trading_diary/features/insights/presentation/views/insights_view.dart';
-import 'package:trading_diary/features/portfolio/presentation/views/portfolio_crud_view.dart';
-import 'package:trading_diary/features/psychology/presentation/views/psychology_view.dart';
-import 'package:trading_diary/features/strategy/presentation/views/strategy_risk_view.dart';
-import 'package:trading_diary/features/trades/presentation/views/trades_crud_view.dart';
-import 'package:trading_diary/l10n/app_localizations.dart';
+import 'package:logiq/features/daily_journal/presentation/views/daily_journal_view.dart';
+import 'package:logiq/features/insights/presentation/views/insights_view.dart';
+import 'package:logiq/features/portfolio/presentation/views/portfolio_crud_view.dart';
+import 'package:logiq/features/psychology/presentation/views/psychology_view.dart';
+import 'package:logiq/features/strategy/presentation/views/strategy_risk_view.dart';
+import 'package:logiq/features/trades/presentation/views/trades_crud_view.dart';
+import 'package:logiq/l10n/app_localizations.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key});

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:trading_diary/app/app_shell.dart';
-import 'package:trading_diary/core/theme/app_theme.dart';
-import 'package:trading_diary/l10n/app_localizations.dart';
+import 'package:logiq/app/app_shell.dart';
+import 'package:logiq/core/theme/app_theme.dart';
+import 'package:logiq/l10n/app_localizations.dart';
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});

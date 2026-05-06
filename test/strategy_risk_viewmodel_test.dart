@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
-import 'package:trading_diary/core/storage/storage_boxes.dart';
-import 'package:trading_diary/core/storage/storage_initializer.dart';
-import 'package:trading_diary/features/strategy/presentation/viewmodels/strategy_risk_viewmodel.dart';
-import 'package:trading_diary/repositories/local/local_risk_repository.dart';
-import 'package:trading_diary/repositories/local/local_strategy_repository.dart';
+import 'package:logiq/core/storage/storage_boxes.dart';
+import 'package:logiq/core/storage/storage_initializer.dart';
+import 'package:logiq/features/strategy/presentation/viewmodels/strategy_risk_viewmodel.dart';
+import 'package:logiq/repositories/local/local_risk_repository.dart';
+import 'package:logiq/repositories/local/local_strategy_repository.dart';
 
 void main() {
   late Directory dir;

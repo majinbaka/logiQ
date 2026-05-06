@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:trading_diary/core/database/models/trade_fill_model.dart';
-import 'package:trading_diary/core/trading/trade_metrics_calculator.dart';
+import 'package:logiq/core/database/models/trade_fill_model.dart';
+import 'package:logiq/core/trading/trade_metrics_calculator.dart';
 
 void main() {
   const calculator = TradeMetricsCalculator();

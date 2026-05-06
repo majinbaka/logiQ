@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
-import 'package:trading_diary/core/database/models/cash_movement_model.dart';
-import 'package:trading_diary/core/database/models/portfolio_input_enums.dart';
-import 'package:trading_diary/core/database/models/position_snapshot_model.dart';
-import 'package:trading_diary/core/database/models/portfolio_snapshot_model.dart';
-import 'package:trading_diary/core/database/models/price_quote_model.dart';
-import 'package:trading_diary/repositories/contracts/account_repository.dart';
-import 'package:trading_diary/repositories/contracts/portfolio_repository.dart';
+import 'package:logiq/core/database/models/cash_movement_model.dart';
+import 'package:logiq/core/database/models/portfolio_input_enums.dart';
+import 'package:logiq/core/database/models/position_snapshot_model.dart';
+import 'package:logiq/core/database/models/portfolio_snapshot_model.dart';
+import 'package:logiq/core/database/models/price_quote_model.dart';
+import 'package:logiq/repositories/contracts/account_repository.dart';
+import 'package:logiq/repositories/contracts/portfolio_repository.dart';
 
 class PortfolioCrudViewModel extends ChangeNotifier {
   PortfolioCrudViewModel({

@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
-import 'package:trading_diary/app/app.dart';
-import 'package:trading_diary/core/storage/storage_boxes.dart';
-import 'package:trading_diary/core/storage/storage_initializer.dart';
-import 'package:trading_diary/l10n/app_localizations.dart';
+import 'package:logiq/app/app.dart';
+import 'package:logiq/core/storage/storage_boxes.dart';
+import 'package:logiq/core/storage/storage_initializer.dart';
+import 'package:logiq/l10n/app_localizations.dart';
 
 void main() {
   late Directory dir;

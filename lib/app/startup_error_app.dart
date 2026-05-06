@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:trading_diary/core/theme/app_theme.dart';
-import 'package:trading_diary/l10n/app_localizations.dart';
+import 'package:logiq/core/theme/app_theme.dart';
+import 'package:logiq/l10n/app_localizations.dart';
 
 class StartupErrorApp extends StatelessWidget {
   const StartupErrorApp({super.key});

@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
-import 'package:trading_diary/core/storage/storage_initializer.dart';
-import 'package:trading_diary/repositories/local/local_strategy_repository.dart';
+import 'package:logiq/core/storage/storage_initializer.dart';
+import 'package:logiq/repositories/local/local_strategy_repository.dart';
 
 void main() {
   late Directory dir;

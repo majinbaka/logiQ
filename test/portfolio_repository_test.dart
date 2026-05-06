@@ -2,13 +2,13 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
-import 'package:trading_diary/core/database/models/cash_movement_model.dart';
-import 'package:trading_diary/core/database/models/price_quote_model.dart';
-import 'package:trading_diary/core/database/models/trade_fill_model.dart';
-import 'package:trading_diary/core/database/models/trade_model.dart';
-import 'package:trading_diary/core/storage/storage_boxes.dart';
-import 'package:trading_diary/core/storage/storage_initializer.dart';
-import 'package:trading_diary/repositories/local/local_portfolio_repository.dart';
+import 'package:logiq/core/database/models/cash_movement_model.dart';
+import 'package:logiq/core/database/models/price_quote_model.dart';
+import 'package:logiq/core/database/models/trade_fill_model.dart';
+import 'package:logiq/core/database/models/trade_model.dart';
+import 'package:logiq/core/storage/storage_boxes.dart';
+import 'package:logiq/core/storage/storage_initializer.dart';
+import 'package:logiq/repositories/local/local_portfolio_repository.dart';
 
 void main() {
   late Directory dir;

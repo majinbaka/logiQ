@@ -1,18 +1,18 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:trading_diary/core/database/models/instrument_model.dart';
-import 'package:trading_diary/core/database/models/risk_check_model.dart';
-import 'package:trading_diary/core/database/models/risk_rule_model.dart';
-import 'package:trading_diary/core/database/models/strategy_model.dart';
-import 'package:trading_diary/core/database/models/strategy_version_model.dart';
-import 'package:trading_diary/core/database/models/trade_fill_model.dart';
-import 'package:trading_diary/core/database/models/trade_model.dart';
-import 'package:trading_diary/core/database/models/trading_account_model.dart';
-import 'package:trading_diary/features/trades/presentation/viewmodels/trades_crud_viewmodel.dart';
-import 'package:trading_diary/repositories/contracts/account_repository.dart';
-import 'package:trading_diary/repositories/contracts/instrument_repository.dart';
-import 'package:trading_diary/repositories/contracts/risk_repository.dart';
-import 'package:trading_diary/repositories/contracts/strategy_repository.dart';
-import 'package:trading_diary/repositories/contracts/trade_repository.dart';
+import 'package:logiq/core/database/models/instrument_model.dart';
+import 'package:logiq/core/database/models/risk_check_model.dart';
+import 'package:logiq/core/database/models/risk_rule_model.dart';
+import 'package:logiq/core/database/models/strategy_model.dart';
+import 'package:logiq/core/database/models/strategy_version_model.dart';
+import 'package:logiq/core/database/models/trade_fill_model.dart';
+import 'package:logiq/core/database/models/trade_model.dart';
+import 'package:logiq/core/database/models/trading_account_model.dart';
+import 'package:logiq/features/trades/presentation/viewmodels/trades_crud_viewmodel.dart';
+import 'package:logiq/repositories/contracts/account_repository.dart';
+import 'package:logiq/repositories/contracts/instrument_repository.dart';
+import 'package:logiq/repositories/contracts/risk_repository.dart';
+import 'package:logiq/repositories/contracts/strategy_repository.dart';
+import 'package:logiq/repositories/contracts/trade_repository.dart';
 
 void main() {
   test('create, update and delete via trades crud viewmodel', () async {

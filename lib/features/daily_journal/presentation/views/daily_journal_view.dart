@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:trading_diary/core/database/models/daily_journal_model.dart';
-import 'package:trading_diary/core/widgets/trading_section_header.dart';
-import 'package:trading_diary/core/widgets/trading_state_view.dart';
-import 'package:trading_diary/core/widgets/trading_ui_tokens.dart';
-import 'package:trading_diary/features/daily_journal/presentation/viewmodels/daily_journal_viewmodel.dart';
-import 'package:trading_diary/l10n/app_localizations.dart';
-import 'package:trading_diary/repositories/local/local_daily_journal_repository.dart';
+import 'package:logiq/core/database/models/daily_journal_model.dart';
+import 'package:logiq/core/widgets/trading_section_header.dart';
+import 'package:logiq/core/widgets/trading_state_view.dart';
+import 'package:logiq/core/widgets/trading_ui_tokens.dart';
+import 'package:logiq/features/daily_journal/presentation/viewmodels/daily_journal_viewmodel.dart';
+import 'package:logiq/l10n/app_localizations.dart';
+import 'package:logiq/repositories/local/local_daily_journal_repository.dart';
 
 class DailyJournalView extends StatefulWidget {
   const DailyJournalView({super.key});

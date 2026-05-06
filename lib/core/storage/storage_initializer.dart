@@ -87,7 +87,7 @@ class StorageInitializer {
 
   Directory _buildFallbackDirectory() {
     final suffix = DateTime.now().microsecondsSinceEpoch;
-    return Directory('${Directory.systemTemp.path}/trading_diary_${pid}_$suffix');
+    return Directory('${Directory.systemTemp.path}/logiq_${pid}_$suffix');
   }
 
   int _tryParseSchemaVersion(Object? value) {

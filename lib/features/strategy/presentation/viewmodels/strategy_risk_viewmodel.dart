@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
-import 'package:trading_diary/core/database/models/risk_check_model.dart';
-import 'package:trading_diary/core/database/models/risk_rule_model.dart';
-import 'package:trading_diary/core/database/models/strategy_model.dart';
-import 'package:trading_diary/core/database/models/strategy_version_model.dart';
-import 'package:trading_diary/repositories/contracts/risk_repository.dart';
-import 'package:trading_diary/repositories/contracts/strategy_repository.dart';
+import 'package:logiq/core/database/models/risk_check_model.dart';
+import 'package:logiq/core/database/models/risk_rule_model.dart';
+import 'package:logiq/core/database/models/strategy_model.dart';
+import 'package:logiq/core/database/models/strategy_version_model.dart';
+import 'package:logiq/repositories/contracts/risk_repository.dart';
+import 'package:logiq/repositories/contracts/strategy_repository.dart';
 
 class StrategyRiskViewModel extends ChangeNotifier {
   StrategyRiskViewModel({

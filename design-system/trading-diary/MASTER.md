@@ -1,10 +1,10 @@
-# Trading Diary Design System
+# logiq Design System
 
 > **Retrieval rule:** When building a page, first read
 > `design-system/trading-diary/pages/[page-name].md`. Page rules override this
 > Master file. If no page file exists, follow this Master file.
 
-**Project:** Trading Diary  
+**Project:** logiq  
 **Generated:** 2026-05-05  
 **Product type:** Private trading journal, portfolio tracker, risk workflow, and
 analytics dashboard  

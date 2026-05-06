@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:trading_diary/core/validation/validators.dart';
+import 'package:logiq/core/validation/validators.dart';
 
 void main() {
   test('throws on invalid percent and score ranges', () {

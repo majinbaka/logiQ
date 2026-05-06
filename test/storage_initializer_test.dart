@@ -2,14 +2,14 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
-import 'package:trading_diary/core/storage/storage_boxes.dart';
-import 'package:trading_diary/core/storage/storage_initializer.dart';
+import 'package:logiq/core/storage/storage_boxes.dart';
+import 'package:logiq/core/storage/storage_initializer.dart';
 
 void main() {
   late Directory dir;
 
   setUp(() async {
-    dir = await Directory.systemTemp.createTemp('trading_diary_storage_test_');
+    dir = await Directory.systemTemp.createTemp('logiq_storage_test_');
     Hive.init(dir.path);
     StorageInitializer.instance.resetForTest();
   });

@@ -4,12 +4,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
-import 'package:trading_diary/core/widgets/trading_state_view.dart';
-import 'package:trading_diary/core/storage/storage_boxes.dart';
-import 'package:trading_diary/core/storage/storage_initializer.dart';
+import 'package:logiq/core/widgets/trading_state_view.dart';
+import 'package:logiq/core/storage/storage_boxes.dart';
+import 'package:logiq/core/storage/storage_initializer.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:trading_diary/features/psychology/presentation/views/psychology_view.dart';
-import 'package:trading_diary/l10n/app_localizations.dart';
+import 'package:logiq/features/psychology/presentation/views/psychology_view.dart';
+import 'package:logiq/l10n/app_localizations.dart';
 
 void main() {
   late Directory dir;

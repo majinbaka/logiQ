@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:trading_diary/core/database/models/analytics_trade_fact_model.dart';
-import 'package:trading_diary/core/database/models/insight_model.dart';
-import 'package:trading_diary/core/database/models/tag_model.dart';
-import 'package:trading_diary/core/database/models/trade_tag_model.dart';
-import 'package:trading_diary/core/storage/storage_boxes.dart';
-import 'package:trading_diary/core/widgets/trading_section_header.dart';
-import 'package:trading_diary/core/widgets/trading_state_view.dart';
-import 'package:trading_diary/core/widgets/trading_ui_tokens.dart';
-import 'package:trading_diary/l10n/app_localizations.dart';
-import 'package:trading_diary/repositories/local/local_insight_repository.dart';
-import 'package:trading_diary/repositories/local/local_repository_utils.dart';
+import 'package:logiq/core/database/models/analytics_trade_fact_model.dart';
+import 'package:logiq/core/database/models/insight_model.dart';
+import 'package:logiq/core/database/models/tag_model.dart';
+import 'package:logiq/core/database/models/trade_tag_model.dart';
+import 'package:logiq/core/storage/storage_boxes.dart';
+import 'package:logiq/core/widgets/trading_section_header.dart';
+import 'package:logiq/core/widgets/trading_state_view.dart';
+import 'package:logiq/core/widgets/trading_ui_tokens.dart';
+import 'package:logiq/l10n/app_localizations.dart';
+import 'package:logiq/repositories/local/local_insight_repository.dart';
+import 'package:logiq/repositories/local/local_repository_utils.dart';
 
 class InsightsView extends StatefulWidget {
   const InsightsView({super.key});

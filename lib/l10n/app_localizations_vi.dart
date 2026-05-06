@@ -9,7 +9,7 @@ class AppLocalizationsVi extends AppLocalizations {
   AppLocalizationsVi([String locale = 'vi']) : super(locale);
 
   @override
-  String get appTitle => 'Trading Diary';
+  String get appTitle => 'logiq';
 
   @override
   String get navTrades => 'Giao dịch';

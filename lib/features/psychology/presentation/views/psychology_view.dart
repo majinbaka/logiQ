@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:trading_diary/core/database/models/daily_journal_model.dart';
-import 'package:trading_diary/core/database/models/emotion_log_model.dart';
-import 'package:trading_diary/core/database/models/tag_model.dart';
-import 'package:trading_diary/core/database/models/trade_model.dart';
-import 'package:trading_diary/core/database/models/trade_tag_model.dart';
-import 'package:trading_diary/core/widgets/trading_section_header.dart';
-import 'package:trading_diary/core/widgets/trading_state_view.dart';
-import 'package:trading_diary/core/widgets/trading_ui_tokens.dart';
-import 'package:trading_diary/features/psychology/presentation/widgets/psychology_widgets.dart';
-import 'package:trading_diary/l10n/app_localizations.dart';
-import 'package:trading_diary/repositories/local/local_daily_journal_repository.dart';
-import 'package:trading_diary/repositories/local/local_psychology_repository.dart';
-import 'package:trading_diary/repositories/local/local_trade_repository.dart';
+import 'package:logiq/core/database/models/daily_journal_model.dart';
+import 'package:logiq/core/database/models/emotion_log_model.dart';
+import 'package:logiq/core/database/models/tag_model.dart';
+import 'package:logiq/core/database/models/trade_model.dart';
+import 'package:logiq/core/database/models/trade_tag_model.dart';
+import 'package:logiq/core/widgets/trading_section_header.dart';
+import 'package:logiq/core/widgets/trading_state_view.dart';
+import 'package:logiq/core/widgets/trading_ui_tokens.dart';
+import 'package:logiq/features/psychology/presentation/widgets/psychology_widgets.dart';
+import 'package:logiq/l10n/app_localizations.dart';
+import 'package:logiq/repositories/local/local_daily_journal_repository.dart';
+import 'package:logiq/repositories/local/local_psychology_repository.dart';
+import 'package:logiq/repositories/local/local_trade_repository.dart';
 
 class PsychologyView extends StatefulWidget {
   const PsychologyView({super.key});

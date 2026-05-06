@@ -98,7 +98,7 @@ abstract class AppLocalizations {
   /// Application title
   ///
   /// In en, this message translates to:
-  /// **'Trading Diary'**
+  /// **'logiq'**
   String get appTitle;
 
   /// No description provided for @navTrades.

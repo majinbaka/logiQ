@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:trading_diary/core/analytics/analytics_rebuild_service.dart';
-import 'package:trading_diary/core/database/models/insight_model.dart';
-import 'package:trading_diary/repositories/contracts/analytics_repository.dart';
-import 'package:trading_diary/repositories/contracts/insight_repository.dart';
+import 'package:logiq/core/analytics/analytics_rebuild_service.dart';
+import 'package:logiq/core/database/models/insight_model.dart';
+import 'package:logiq/repositories/contracts/analytics_repository.dart';
+import 'package:logiq/repositories/contracts/insight_repository.dart';
 
 void main() {
   test(

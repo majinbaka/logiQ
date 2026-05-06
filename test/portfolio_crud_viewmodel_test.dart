@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:trading_diary/core/database/models/cash_movement_model.dart';
-import 'package:trading_diary/core/database/models/position_snapshot_model.dart';
-import 'package:trading_diary/core/database/models/portfolio_snapshot_model.dart';
-import 'package:trading_diary/core/database/models/price_quote_model.dart';
-import 'package:trading_diary/features/portfolio/presentation/viewmodels/portfolio_crud_viewmodel.dart';
-import 'package:trading_diary/repositories/contracts/portfolio_repository.dart';
+import 'package:logiq/core/database/models/cash_movement_model.dart';
+import 'package:logiq/core/database/models/position_snapshot_model.dart';
+import 'package:logiq/core/database/models/portfolio_snapshot_model.dart';
+import 'package:logiq/core/database/models/price_quote_model.dart';
+import 'package:logiq/features/portfolio/presentation/viewmodels/portfolio_crud_viewmodel.dart';
+import 'package:logiq/repositories/contracts/portfolio_repository.dart';
 
 void main() {
   test('create, update and delete via portfolio crud viewmodel', () async {

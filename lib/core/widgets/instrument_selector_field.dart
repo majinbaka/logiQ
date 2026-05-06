@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:trading_diary/core/database/models/instrument_model.dart';
-import 'package:trading_diary/core/widgets/trading_ui_tokens.dart';
+import 'package:logiq/core/database/models/instrument_model.dart';
+import 'package:logiq/core/widgets/trading_ui_tokens.dart';
 
 class InstrumentSelectorField extends StatelessWidget {
   const InstrumentSelectorField({

@@ -1,4 +1,4 @@
-# Production Ready Roadmap For Trading Diary
+# Production Ready Roadmap For logiq
 
 ## Context
 

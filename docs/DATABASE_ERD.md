@@ -1,4 +1,4 @@
-# Trading Diary Database ERD
+# logiq Database ERD
 
 Tai lieu nay mo ta thiet ke database logical dua tren `docs/FEATURES.md`.
 Hien tai app chua co repository/storage layer, nen ERD nay dung lam dinh huong

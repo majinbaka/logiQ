@@ -1,4 +1,4 @@
-# Trading Diary Feature Document
+# logiq Feature Document
 
 ## 1. Nhat Ky Giao Dich
 

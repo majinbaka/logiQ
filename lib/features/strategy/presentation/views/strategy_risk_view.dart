@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:trading_diary/core/database/models/strategy_model.dart';
-import 'package:trading_diary/core/widgets/trading_section_header.dart';
-import 'package:trading_diary/core/widgets/trading_state_view.dart';
-import 'package:trading_diary/core/widgets/trading_ui_tokens.dart';
-import 'package:trading_diary/features/strategy/presentation/viewmodels/strategy_risk_viewmodel.dart';
-import 'package:trading_diary/l10n/app_localizations.dart';
-import 'package:trading_diary/repositories/local/local_risk_repository.dart';
-import 'package:trading_diary/repositories/local/local_strategy_repository.dart';
+import 'package:logiq/core/database/models/strategy_model.dart';
+import 'package:logiq/core/widgets/trading_section_header.dart';
+import 'package:logiq/core/widgets/trading_state_view.dart';
+import 'package:logiq/core/widgets/trading_ui_tokens.dart';
+import 'package:logiq/features/strategy/presentation/viewmodels/strategy_risk_viewmodel.dart';
+import 'package:logiq/l10n/app_localizations.dart';
+import 'package:logiq/repositories/local/local_risk_repository.dart';
+import 'package:logiq/repositories/local/local_strategy_repository.dart';
 
 class StrategyRiskView extends StatefulWidget {
   const StrategyRiskView({super.key});

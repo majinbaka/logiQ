@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:trading_diary/core/database/models/daily_journal_model.dart';
-import 'package:trading_diary/core/system/id_generator.dart';
-import 'package:trading_diary/repositories/contracts/daily_journal_repository.dart';
+import 'package:logiq/core/database/models/daily_journal_model.dart';
+import 'package:logiq/core/system/id_generator.dart';
+import 'package:logiq/repositories/contracts/daily_journal_repository.dart';
 
 class DailyJournalViewModel extends ChangeNotifier {
   DailyJournalViewModel({

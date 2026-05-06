@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:trading_diary/core/database/models/cash_movement_model.dart';
-import 'package:trading_diary/core/database/models/instrument_model.dart';
-import 'package:trading_diary/core/database/models/position_snapshot_model.dart';
-import 'package:trading_diary/core/database/models/portfolio_snapshot_model.dart';
-import 'package:trading_diary/core/database/models/price_quote_model.dart';
-import 'package:trading_diary/core/database/models/trading_account_model.dart';
-import 'package:trading_diary/features/portfolio/presentation/views/portfolio_crud_view.dart';
-import 'package:trading_diary/l10n/app_localizations.dart';
-import 'package:trading_diary/repositories/contracts/account_repository.dart';
-import 'package:trading_diary/repositories/contracts/instrument_repository.dart';
-import 'package:trading_diary/repositories/contracts/portfolio_repository.dart';
+import 'package:logiq/core/database/models/cash_movement_model.dart';
+import 'package:logiq/core/database/models/instrument_model.dart';
+import 'package:logiq/core/database/models/position_snapshot_model.dart';
+import 'package:logiq/core/database/models/portfolio_snapshot_model.dart';
+import 'package:logiq/core/database/models/price_quote_model.dart';
+import 'package:logiq/core/database/models/trading_account_model.dart';
+import 'package:logiq/features/portfolio/presentation/views/portfolio_crud_view.dart';
+import 'package:logiq/l10n/app_localizations.dart';
+import 'package:logiq/repositories/contracts/account_repository.dart';
+import 'package:logiq/repositories/contracts/instrument_repository.dart';
+import 'package:logiq/repositories/contracts/portfolio_repository.dart';
 
 void main() {
   testWidgets('portfolio shows empty state when no snapshot exists', (tester) async {

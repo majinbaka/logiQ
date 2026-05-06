@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:trading_diary/core/database/models/instrument_model.dart';
-import 'package:trading_diary/core/database/models/risk_check_model.dart';
-import 'package:trading_diary/core/database/models/trade_model.dart';
-import 'package:trading_diary/core/widgets/instrument_date_summary.dart';
-import 'package:trading_diary/core/database/models/trading_account_model.dart';
-import 'package:trading_diary/core/analytics/analytics_rebuild_service.dart';
-import 'package:trading_diary/core/widgets/trading_section_header.dart';
-import 'package:trading_diary/core/widgets/trading_state_view.dart';
-import 'package:trading_diary/core/widgets/trading_ui_tokens.dart';
-import 'package:trading_diary/features/trades/presentation/viewmodels/trades_crud_viewmodel.dart';
-import 'package:trading_diary/features/trades/presentation/widgets/components/trade_detail_view.dart';
-import 'package:trading_diary/features/trades/presentation/widgets/components/trade_form_sheet.dart';
-import 'package:trading_diary/l10n/app_localizations.dart';
-import 'package:trading_diary/repositories/local/local_account_repository.dart';
-import 'package:trading_diary/repositories/local/local_analytics_repository.dart';
-import 'package:trading_diary/repositories/local/local_instrument_repository.dart';
-import 'package:trading_diary/repositories/local/local_insight_repository.dart';
-import 'package:trading_diary/repositories/local/local_risk_repository.dart';
-import 'package:trading_diary/repositories/local/local_strategy_repository.dart';
-import 'package:trading_diary/repositories/local/local_trade_repository.dart';
+import 'package:logiq/core/database/models/instrument_model.dart';
+import 'package:logiq/core/database/models/risk_check_model.dart';
+import 'package:logiq/core/database/models/trade_model.dart';
+import 'package:logiq/core/widgets/instrument_date_summary.dart';
+import 'package:logiq/core/database/models/trading_account_model.dart';
+import 'package:logiq/core/analytics/analytics_rebuild_service.dart';
+import 'package:logiq/core/widgets/trading_section_header.dart';
+import 'package:logiq/core/widgets/trading_state_view.dart';
+import 'package:logiq/core/widgets/trading_ui_tokens.dart';
+import 'package:logiq/features/trades/presentation/viewmodels/trades_crud_viewmodel.dart';
+import 'package:logiq/features/trades/presentation/widgets/components/trade_detail_view.dart';
+import 'package:logiq/features/trades/presentation/widgets/components/trade_form_sheet.dart';
+import 'package:logiq/l10n/app_localizations.dart';
+import 'package:logiq/repositories/local/local_account_repository.dart';
+import 'package:logiq/repositories/local/local_analytics_repository.dart';
+import 'package:logiq/repositories/local/local_instrument_repository.dart';
+import 'package:logiq/repositories/local/local_insight_repository.dart';
+import 'package:logiq/repositories/local/local_risk_repository.dart';
+import 'package:logiq/repositories/local/local_strategy_repository.dart';
+import 'package:logiq/repositories/local/local_trade_repository.dart';
 
 class TradesCrudView extends StatefulWidget {
   const TradesCrudView({super.key, TradesCrudViewModel? viewModel})

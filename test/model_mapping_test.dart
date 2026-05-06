@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:trading_diary/core/database/models/trade_model.dart';
+import 'package:logiq/core/database/models/trade_model.dart';
 
 void main() {
   test('TradeModel map roundtrip keeps key fields', () {

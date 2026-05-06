@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:trading_diary/core/widgets/trading_section_header.dart';
-import 'package:trading_diary/core/widgets/trading_state_view.dart';
-import 'package:trading_diary/core/widgets/trading_ui_tokens.dart';
-import 'package:trading_diary/l10n/app_localizations.dart';
+import 'package:logiq/core/widgets/trading_section_header.dart';
+import 'package:logiq/core/widgets/trading_state_view.dart';
+import 'package:logiq/core/widgets/trading_ui_tokens.dart';
+import 'package:logiq/l10n/app_localizations.dart';
 
 class TradesOverviewView extends StatelessWidget {
   const TradesOverviewView({super.key});

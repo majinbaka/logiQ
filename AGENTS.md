@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This repository is a Flutter app named `trading_diary`.
+This repository is a Flutter app named `logiq`.
 
 Current observed structure:
 
