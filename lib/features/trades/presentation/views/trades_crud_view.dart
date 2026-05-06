@@ -209,13 +209,17 @@ class _TradesCrudViewState extends State<TradesCrudView> {
   }
 
   Future<void> _openTradeForm({TradeModel? existing}) async {
+    final pinnedAccountId = existing?.accountId ?? _viewModel.activeAccountId;
+    final pinnedAccounts = _viewModel.accounts
+        .where((item) => item.id == pinnedAccountId)
+        .toList(growable: false);
     final result = await showModalBottomSheet<TradeFormResult>(
       context: context,
       isScrollControlled: true,
       builder: (context) {
         return TradeFormSheet(
           existing: existing,
-          accounts: _viewModel.accounts,
+          accounts: pinnedAccounts.isEmpty ? _viewModel.accounts : pinnedAccounts,
           instruments: _viewModel.instruments,
           trades: _viewModel.trades,
           onCreateInstrument: _viewModel.createInstrument,

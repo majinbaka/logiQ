@@ -63,6 +63,16 @@ void main() {
       'effective_from': DateTime.utc(2026, 1, 1).toIso8601String(),
       'created_at': DateTime.utc(2026, 1, 1).toIso8601String(),
     });
+    await Hive.box<Map>(StorageBoxes.accountBalances).put('acc_1_VND', {
+      'id': 'acc_1_VND',
+      'account_id': 'acc_1',
+      'currency': 'VND',
+      'current_cash_balance': '1000000',
+      'available_cash': '1000000',
+      'reserved_cash': '0',
+      'buying_power': '1000000',
+      'updated_at': DateTime.utc(2026, 1, 1).toIso8601String(),
+    });
   });
 
   tearDown(() async {

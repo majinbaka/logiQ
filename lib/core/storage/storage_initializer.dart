@@ -5,7 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../seed/account_master_data_seeder.dart';
 import '../seed/seed_fixtures.dart';
+import '../../repositories/local/local_risk_repository.dart';
+import '../../repositories/local/local_strategy_repository.dart';
 import 'storage_boxes.dart';
 
 class StorageInitializer {
@@ -50,6 +53,7 @@ class StorageInitializer {
       );
     }
     await _seedReferenceDataIfNeeded();
+    await _seedPrimaryAccountMasterDataIfNeeded();
     await schemaBox.put(_schemaVersionKey, schemaVersion);
 
     _initialized = true;
@@ -70,6 +74,7 @@ class StorageInitializer {
         : await Hive.openBox(StorageBoxes.schema);
     await schemaBox.clear();
     await _seedReferenceDataIfNeeded();
+    await _seedPrimaryAccountMasterDataIfNeeded();
     await schemaBox.put(_schemaVersionKey, schemaVersion);
 
     _initialized = true;
@@ -162,5 +167,14 @@ class StorageInitializer {
       final version = SeedFixtures.strategyVersion();
       await strategyVersionsBox.put(version.id, version.toMap());
     }
+  }
+
+  Future<void> _seedPrimaryAccountMasterDataIfNeeded() async {
+    final accountId = SeedFixtures.account().id;
+    final seeder = AccountMasterDataSeeder(
+      riskRepository: LocalRiskRepository(),
+      strategyRepository: LocalStrategyRepository(),
+    );
+    await seeder.seedForNewAccount(accountId);
   }
 }

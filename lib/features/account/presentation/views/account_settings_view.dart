@@ -92,9 +92,7 @@ class _AccountSettingsViewState extends State<AccountSettingsView> {
     );
 
     await _accountRepository.upsert(account);
-    if (existing == null) {
-      await _masterDataSeeder.seedForNewAccount(account.id);
-    }
+    await _masterDataSeeder.seedForNewAccount(account.id);
     await _loadAccounts();
 
     if (existing == null || widget.selectedAccountId == existing.id) {
@@ -131,6 +129,10 @@ class _AccountSettingsViewState extends State<AccountSettingsView> {
     setState(() => _isResetting = true);
     try {
       await StorageInitializer.instance.resetAllDataToSeed();
+      final activeAccounts = await _accountRepository.listActive();
+      if (activeAccounts.isNotEmpty) {
+        await _masterDataSeeder.seedForNewAccount(activeAccounts.first.id);
+      }
       await _loadAccounts();
       if (_accounts.isNotEmpty) {
         widget.onSelectedAccountChanged(_accounts.first.id);

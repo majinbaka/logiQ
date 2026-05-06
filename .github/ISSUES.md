@@ -53,3 +53,11 @@
 - **Description:** After creating a deposit, trading cash could still display `0`, blocking trade creation with insufficient-cash validation.
 - **Root cause:** Account-balance keying used raw `currency` text (case-sensitive), so writes like `vnd` were not found by reads expecting `VND`.
 - **Fix / workaround:** Normalized currency consistently to uppercase for all balance read/write/create paths and added regression test for mixed-case currency lookup.
+
+## [RESOLVED] Trade form could switch account away from active selection  (STATUS: RESOLVED)
+- **Date found:** 2026-05-06
+- **Date resolved:** 2026-05-06
+- **Affected files:** lib/features/trades/presentation/views/trades_crud_view.dart, lib/features/account/presentation/views/account_settings_view.dart, lib/core/storage/storage_initializer.dart, test/trades_crud_view_test.dart
+- **Description:** After changing selected account, trade creation/edit form still allowed selecting a different account, and primary seeded account could miss master data initialization compared with newly created accounts.
+- **Root cause:** Trade form received full account list instead of active account scope; master-data seeding was only guaranteed on account-create flow, not consistently on seed/reset/upsert paths.
+- **Fix / workaround:** Pinned trade form account list to active account (or trade account when editing), always ran account master-data seeding after account upsert, and seeded primary account master data during storage initialize/reset.
