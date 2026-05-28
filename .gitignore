@@ -1,3 +1,37 @@
+# Python
 __pycache__/
 *.pyc
+
+# Miscellaneous
+*.class
+*.log
+*.swp
 .DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+
+# IDE
+*.iml
+*.ipr
+*.iws
+.idea/
+.vscode/
+
+# Flutter/Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub/
+.pub-cache/
+build/
+
+# Generated docs
+**/doc/api/
+
+# Flutter symbolication
+app.*.symbols
+
+# Flutter obfuscation
+app.*.map.json
