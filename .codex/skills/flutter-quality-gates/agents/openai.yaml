@@ -1,0 +1,4 @@
+interface:
+  display_name: "Flutter Quality Gates"
+  short_description: "Analyze, test, and release checks for Flutter"
+  default_prompt: "Use this skill to decide and run the right Flutter quality checks before completion."

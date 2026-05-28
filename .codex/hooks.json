@@ -1,0 +1,28 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/user_prompt_submit_flutter_context.py\"",
+            "timeout": 10,
+            "statusMessage": "Injecting Flutter completion checklist"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/stop_skill_todo_guard.py\"",
+            "timeout": 10,
+            "statusMessage": "Checking skill placeholders"
+          }
+        ]
+      }
+    ]
+  }
+}

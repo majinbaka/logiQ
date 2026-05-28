@@ -1,0 +1,4 @@
+interface:
+  display_name: "Flutter Workflow"
+  short_description: "Delivery workflow for Flutter tasks"
+  default_prompt: "Use this skill to implement or fix a Flutter task with clear verification."

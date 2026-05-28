@@ -1,0 +1,9 @@
+# Flutter and Dart commands that are safe to run without approval.
+prefix_rule(pattern=["flutter", "pub", "get"], decision="allow")
+prefix_rule(pattern=["flutter", "analyze"], decision="allow")
+prefix_rule(pattern=["flutter", "test"], decision="allow")
+prefix_rule(pattern=["flutter", "gen-l10n"], decision="allow")
+prefix_rule(pattern=["flutter", "build"], decision="allow")
+prefix_rule(pattern=["dart", "format"], decision="allow")
+prefix_rule(pattern=["dart", "run"], decision="allow")
+prefix_rule(pattern=["melos"], decision="allow")

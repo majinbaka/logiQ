@@ -1,0 +1,4 @@
+interface:
+  display_name: "Flutter Architecture Guard"
+  short_description: "Layering and state-management guardrails"
+  default_prompt: "Use this skill when a Flutter change may affect architecture, state flow, or dependency boundaries."
