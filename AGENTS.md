@@ -12,6 +12,9 @@ Allowed content:
 - `.codex/hooks.json`
 - `.codex/hooks/**`
 - `.codex/config.toml`
+- `.codex/resources/**`
+- `.codex/tool/**`
+- `.gitignore`
 
 Do not initialize a Flutter app in this repository unless explicitly requested.
 
