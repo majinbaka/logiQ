@@ -80,5 +80,45 @@ void main() {
       expect(tx.changes[1].amountDelta, 100);
       expect(tx.changes[1].percentChange, closeTo(100, 0.0001));
     });
+
+    test(
+      'recordTradeImpact updates brokerage balance and rejects overspend',
+      () {
+        final AccountManager manager = AccountManager();
+        final Account wallet = manager.createAccount(
+          name: 'Ví giao dịch',
+          initialBalance: 20000,
+        );
+        manager.transfer(
+          fromAccountId: wallet.id,
+          toAccountId: AccountManager.brokerageAccountId,
+          amount: 15000,
+        );
+
+        manager.recordTradeImpact(
+          symbol: 'fpt',
+          isBuy: true,
+          notionalValue: 10000,
+          fee: 100,
+        );
+
+        expect(manager.brokerageBalance, 4900);
+        expect(manager.transactions.first.type, AccountTransactionType.trade);
+        expect(manager.transactions.first.tradeSymbol, 'FPT');
+        expect(manager.transactions.first.tradeSideLabel, 'Mua');
+        expect(manager.transactions.first.changes.single.amountDelta, -10100);
+
+        expect(
+          () => manager.recordTradeImpact(
+            symbol: 'HPG',
+            isBuy: true,
+            notionalValue: 5000,
+            fee: 0,
+          ),
+          throwsArgumentError,
+        );
+        expect(manager.brokerageBalance, 4900);
+      },
+    );
   });
 }

@@ -26,6 +26,11 @@ class AccountManager extends ChangeNotifier {
   UnmodifiableListView<AccountTransaction> get transactions =>
       UnmodifiableListView(_transactions);
 
+  Account get brokerageAccount =>
+      _accounts.firstWhere((account) => account.id == brokerageAccountId);
+
+  double get brokerageBalance => brokerageAccount.balance;
+
   double get totalBalance =>
       _accounts.fold<double>(0, (sum, item) => sum + item.balance);
 
@@ -161,6 +166,74 @@ class AccountManager extends ChangeNotifier {
     _transactions.insert(
       0,
       _buildCashFlowTransaction(account: current, delta: delta, note: note),
+    );
+    notifyListeners();
+  }
+
+  void validateTradeImpact({
+    required bool isBuy,
+    required double notionalValue,
+    required double fee,
+  }) {
+    _validateAmount(notionalValue, label: 'Giá trị lệnh');
+    _validateAmount(fee, label: 'Phí và thuế');
+    if (notionalValue <= 0) {
+      throw ArgumentError('Giá trị lệnh phải lớn hơn 0.');
+    }
+
+    final double delta = tradeImpactDelta(
+      isBuy: isBuy,
+      notionalValue: notionalValue,
+      fee: fee,
+    );
+    if (brokerageBalance + delta < -_epsilon) {
+      throw ArgumentError('Số dư tài khoản chứng khoán không đủ cho lệnh này.');
+    }
+  }
+
+  double tradeImpactDelta({
+    required bool isBuy,
+    required double notionalValue,
+    required double fee,
+  }) {
+    return isBuy ? -(notionalValue + fee) : notionalValue - fee;
+  }
+
+  void recordTradeImpact({
+    required String symbol,
+    required bool isBuy,
+    required double notionalValue,
+    required double fee,
+  }) {
+    final String normalizedSymbol = symbol.trim().toUpperCase();
+    if (normalizedSymbol.isEmpty) {
+      throw ArgumentError('Mã chứng khoán không được để trống.');
+    }
+    validateTradeImpact(isBuy: isBuy, notionalValue: notionalValue, fee: fee);
+
+    final int index = _findIndexById(brokerageAccountId);
+    final Account current = _accounts[index];
+    final double delta = tradeImpactDelta(
+      isBuy: isBuy,
+      notionalValue: notionalValue,
+      fee: fee,
+    );
+
+    _accounts[index] = current.copyWith(balance: current.balance + delta);
+    _transactions.insert(
+      0,
+      AccountTransaction(
+        type: AccountTransactionType.trade,
+        accountName: current.name,
+        tradeSymbol: normalizedSymbol,
+        tradeSideLabel: isBuy ? 'Mua' : 'Bán',
+        amount: notionalValue,
+        createdAt: DateTime.now(),
+        note: fee > 0 ? 'Phí/thuế: ${fee.round()}' : null,
+        changes: <AccountBalanceChange>[
+          _buildBalanceChange(account: current, delta: delta),
+        ],
+      ),
     );
     notifyListeners();
   }

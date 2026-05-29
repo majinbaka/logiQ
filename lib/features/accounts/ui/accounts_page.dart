@@ -969,6 +969,8 @@ class _AccountsPageState extends State<AccountsPage> {
         return Icons.arrow_circle_down;
       case AccountTransactionType.withdrawal:
         return Icons.arrow_circle_up;
+      case AccountTransactionType.trade:
+        return Icons.candlestick_chart_outlined;
     }
   }
 
@@ -980,6 +982,8 @@ class _AccountsPageState extends State<AccountsPage> {
         return 'Nạp tiền vào ${transaction.accountName}';
       case AccountTransactionType.withdrawal:
         return 'Rút tiền từ ${transaction.accountName}';
+      case AccountTransactionType.trade:
+        return '${transaction.tradeSideLabel} ${transaction.tradeSymbol}';
     }
   }
 

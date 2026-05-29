@@ -16,7 +16,8 @@ Xây dựng bước 1 cho phần vốn: người dùng có thể tạo/sửa/xó
 - Xóa tài khoản tiền thường.
 - Chuyển tiền giữa các tài khoản.
 - Nạp/rút trực tiếp cho tài khoản tiền thường.
-- Tạo sẵn 1 tài khoản chứng khoán cố định để giữ vốn giao dịch sau này.
+- Tạo sẵn 1 tài khoản chứng khoán cố định để giữ vốn giao dịch.
+- Ghi nhận tác động tiền từ lệnh mua/bán chứng khoán do màn `Ghi lệnh` tạo ra.
 - Hiển thị tổng số dư và lịch sử giao dịch vốn theo cơ chế tải lũy tiến (mặc định 10 giao dịch gần nhất, cuộn để tải thêm).
 - Bổ sung bộ lọc lịch sử giao dịch theo khoảng ngày và loại tài khoản (`thường` / `chứng khoán`).
 - Format số tiền theo kiểu currency với phân cách hàng nghìn (`.`).
@@ -29,6 +30,8 @@ Xây dựng bước 1 cho phần vốn: người dùng có thể tạo/sửa/xó
 - Không cho chuyển tiền vượt số dư tài khoản nguồn.
 - Tài khoản thường có thể thay đổi số dư bằng giao dịch `nạp/rút`; không thay đổi số dư bằng ghi đè trực tiếp.
 - Khi sửa số dư tài khoản thường, hệ thống tự tạo giao dịch `nạp/rút` tương ứng với phần chênh lệch.
+- Lệnh mua chứng khoán trừ `giá trị lệnh + phí/thuế` khỏi tài khoản chứng khoán và không được làm số dư âm.
+- Lệnh bán chứng khoán cộng `giá trị lệnh - phí/thuế` vào tài khoản chứng khoán và không được làm số dư âm.
 - Số dư và số tiền giao dịch phải là số hợp lệ và không âm (`chuyển`/`nạp`/`rút` phải lớn hơn `0`).
 - Tên tài khoản không được để trống.
 
@@ -45,9 +48,9 @@ Xây dựng bước 1 cho phần vốn: người dùng có thể tạo/sửa/xó
 
 - Domain model:
   - `Account` và `AccountType` (`cash`, `brokerage`)
-  - `AccountTransaction`, `AccountTransactionType`, `AccountBalanceChange`
+  - `AccountTransaction`, `AccountTransactionType` (`transfer`, `deposit`, `withdrawal`, `trade`), `AccountBalanceChange`
 - State:
-  - `AccountManager` (`ChangeNotifier`) quản lý danh sách tài khoản + logic tạo/sửa/xóa/chuyển/nạp/rút.
+  - `AccountManager` (`ChangeNotifier`) quản lý danh sách tài khoản + logic tạo/sửa/xóa/chuyển/nạp/rút và cập nhật số dư tài khoản chứng khoán từ lệnh mua/bán.
 - UI:
   - `AccountsPage` hiển thị danh sách tài khoản, form tạo/sửa, dialog chuyển tiền, dialog nạp/rút, lịch sử giao dịch có màu + % thay đổi, filter ngày/loại tài khoản, và tải lũy tiến theo cuộn.
 
@@ -68,6 +71,7 @@ Xây dựng bước 1 cho phần vốn: người dùng có thể tạo/sửa/xó
   - `updateAccount` tạo giao dịch nạp khi số dư tăng.
   - `recordCashFlow` tạo giao dịch rút và `%` âm khi số dư giảm.
   - `transfer` tạo đồng thời 1 biến động giảm và 1 biến động tăng, kèm loại tài khoản đúng theo từng biến động.
+  - `recordTradeImpact` trừ tiền tài khoản chứng khoán cho lệnh mua và từ chối khi vượt số dư.
 
 ## Giới hạn hiện tại
 
@@ -79,4 +83,4 @@ Xây dựng bước 1 cho phần vốn: người dùng có thể tạo/sửa/xó
 
 - Thêm lưu trữ local (Hive/Isar/SQLite) cho tài khoản và lịch sử chuyển tiền.
 - Bổ sung transaction log chi tiết hơn (ghi chú, mã giao dịch, soft delete).
-- Liên kết trực tiếp với luồng ghi nhận giao dịch chứng khoán để trừ/cộng vốn tự động.
+- Bổ sung kiểm tra số lượng cổ phiếu nắm giữ khi lệnh bán được thêm vào luồng vị thế.

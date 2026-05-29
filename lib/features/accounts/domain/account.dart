@@ -30,7 +30,7 @@ class Account {
   }
 }
 
-enum AccountTransactionType { transfer, deposit, withdrawal }
+enum AccountTransactionType { transfer, deposit, withdrawal, trade }
 
 class AccountBalanceChange {
   const AccountBalanceChange({
@@ -57,6 +57,8 @@ class AccountTransaction {
     this.fromAccountName,
     this.toAccountName,
     this.accountName,
+    this.tradeSymbol,
+    this.tradeSideLabel,
     this.note,
   });
 
@@ -64,6 +66,8 @@ class AccountTransaction {
   final String? fromAccountName;
   final String? toAccountName;
   final String? accountName;
+  final String? tradeSymbol;
+  final String? tradeSideLabel;
   final double amount;
   final DateTime createdAt;
   final List<AccountBalanceChange> changes;
